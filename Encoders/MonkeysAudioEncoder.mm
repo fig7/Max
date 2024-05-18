@@ -21,7 +21,6 @@
 #define PLATFORM_APPLE
 #include <mac/All.h>
 #include <mac/MACLib.h>
-#include <mac/APECompress.h>
 #include <mac/CharacterHelper.h>
 #undef PLATFORM_APPLE
 
