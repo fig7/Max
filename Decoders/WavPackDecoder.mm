@@ -19,9 +19,17 @@
 #import "WavPackDecoder.h"
 #import "CircularBuffer.h"
 
+// Use a namespace to avoid clash with Apple's ChunkHeader
+namespace WP {
+	#include <wavpack/wavpack.h>
+}
+
 #define WP_INPUT_BUFFER_LEN		1024
 
 @implementation WavPackDecoder
+{
+	WP::WavpackContext	*_wpc;
+}
 
 - (id) initWithFilename:(NSString *)filename
 {
@@ -29,7 +37,7 @@
 		char error [80];
 		
 		// Setup converter
-		_wpc = WavpackOpenFileInput([[self filename] fileSystemRepresentation], error, OPEN_WVC, 0);
+		_wpc = WP::WavpackOpenFileInput([[self filename] fileSystemRepresentation], error, OPEN_WVC, 0);
 		NSAssert1(NULL != _wpc, @"Unable to open the input file (%s).", error);
 		
 		// Setup input format descriptor
@@ -94,7 +102,7 @@
 			case 8:
 				
 				// No need for byte swapping
-				alias8 = [buffer exposeBufferForWriting];
+				alias8 = (int8_t*) [buffer exposeBufferForWriting];
 				for(sample = 0; sample < samplesRead * [self pcmFormat].mChannelsPerFrame; ++sample) {
 					*alias8++ = (int8_t)inputBuffer[sample];
 				}
@@ -106,7 +114,7 @@
 			case 16:
 				
 				// Convert to big endian byte order 
-				alias16 = [buffer exposeBufferForWriting];
+				alias16 = (int16_t*) [buffer exposeBufferForWriting];
 				for(sample = 0; sample < samplesRead * [self pcmFormat].mChannelsPerFrame; ++sample) {
 					*alias16++ = (int16_t)OSSwapHostToBigInt16((int16_t)inputBuffer[sample]);
 				}
@@ -118,7 +126,7 @@
 			case 24:
 				
 				// Convert to big endian byte order 
-				alias8 = [buffer exposeBufferForWriting];
+				alias8 = (int8_t*) [buffer exposeBufferForWriting];
 				for(sample = 0; sample < samplesRead * [self pcmFormat].mChannelsPerFrame; ++sample) {
 					audioSample	= inputBuffer[sample];
 					
@@ -135,7 +143,7 @@
 			case 32:
 				
 				// Convert to big endian byte order 
-				alias32 = [buffer exposeBufferForWriting];
+				alias32 = (int32_t*) [buffer exposeBufferForWriting];
 				for(sample = 0; sample < samplesRead * [self pcmFormat].mChannelsPerFrame; ++sample) {
 					*alias32++ = OSSwapHostToBigInt32(inputBuffer[sample]);
 				}

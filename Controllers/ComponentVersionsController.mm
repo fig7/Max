@@ -27,7 +27,10 @@
 #include <mac/All.h>
 #undef PLATFORM_APPLE
 
-#include <wavpack/wavpack.h>
+// Use a namespace to avoid clash with Apple's ChunkHeader
+namespace WP {
+	#include <wavpack/wavpack.h>
+}
 
 #include <wchar.h>
 
@@ -82,7 +85,7 @@ static ComponentVersionsController *sharedController = nil;
 		_flacVersion		= [NSString stringWithFormat:@"FLAC %s", FLAC__VERSION_STRING];
 		_lameVersion		= [NSString stringWithFormat:@"LAME %s", get_lame_version()];
 
-    // TODO: Fix extracting MAC version
+		// TODO: Fix extracting MAC version
 		_macVersion			= [NSString stringWithFormat:@"Monkey's Audio %@", @"10.25" /* [NSString stringWithWideString:MAC_VERSION_STRING] */];
 
 		if(NULL != speexVersion) {
@@ -94,7 +97,7 @@ static ComponentVersionsController *sharedController = nil;
 
 		_libsndfileVersion	= [NSString stringWithCString:buffer encoding:NSASCIIStringEncoding];
 
-		_wavPackVersion		= [NSString stringWithFormat:@"WavPack %s", WavpackGetLibraryVersionString()];
+		_wavPackVersion		= [NSString stringWithFormat:@"WavPack %s", WP::WavpackGetLibraryVersionString()];
 		
 		return self;
 	}

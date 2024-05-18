@@ -46,7 +46,10 @@
 #include <mac/CharacterHelper.h>
 #undef PLATFORM_APPLE
 
-#include <wavpack/wavpack.h>
+// Use a namespace to avoid clash with Apple's ChunkHeader
+namespace WP {
+	#include <wavpack/wavpack.h>
+}
 
 @interface AudioMetadata (FileMetadata)
 + (AudioMetadata *)		metadataFromFLACFile:(NSString *)filename;
@@ -1372,11 +1375,11 @@
 	char							error [80];
 	const char						*tagName				= NULL;
 	char							*tagValue				= NULL;
-    WavpackContext					*wpc					= NULL;
+	WP::WavpackContext				*wpc					= NULL;
 	int								len;
 	
 	@try {
-		wpc = WavpackOpenFileInput([filename fileSystemRepresentation], error, OPEN_TAGS, 0);
+		wpc = WP::WavpackOpenFileInput([filename fileSystemRepresentation], error, OPEN_TAGS, 0);
 		NSAssert(NULL != wpc, NSLocalizedStringFromTable(@"Unable to open the input file.", @"Exceptions", @""));
 		
 		// Album title

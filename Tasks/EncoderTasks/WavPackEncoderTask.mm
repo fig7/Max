@@ -19,7 +19,10 @@
 #import "WavPackEncoderTask.h"
 #import "WavPackEncoder.h"
 
-#include <wavpack/wavpack.h>
+// Use a namespace to avoid clash with Apple's ChunkHeader
+namespace WP {
+	#include <wavpack/wavpack.h>
+};
 
 @interface AudioMetadata (TagMappings)
 + (NSString *)			customizeWavPackTag:(NSString *)tag;
@@ -55,11 +58,11 @@
 	NSString									*isrc					= nil;
 	NSString									*mcn					= nil;
 	NSString									*bundleVersion;
-    WavpackContext								*wpc					= NULL;
+	WP::WavpackContext							*wpc					= NULL;
 	char										error [80];
 	int											result;
 		
-	wpc = WavpackOpenFileInput([[self outputFilename] fileSystemRepresentation], error, OPEN_EDIT_TAGS, 0);
+	wpc = WP::WavpackOpenFileInput([[self outputFilename] fileSystemRepresentation], error, OPEN_EDIT_TAGS, 0);
 	NSAssert(NULL != wpc, NSLocalizedStringFromTable(@"Unable to open the output file.", @"Exceptions", @""));
 	
 	// Album title

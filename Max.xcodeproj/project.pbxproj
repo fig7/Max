@@ -99,7 +99,7 @@
 		8C397B970CC1D99F004EFC92 /* OggSpeexDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFA4B410ABDE11800C5AE9F /* OggSpeexDecoder.m */; };
 		8C397B980CC1D9A0004EFC92 /* OggVorbisDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFA4B430ABDE11800C5AE9F /* OggVorbisDecoder.m */; };
 		8C397B990CC1D9A2004EFC92 /* ShortenDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC9A0C60ACD90BF00948BAA /* ShortenDecoder.m */; };
-		8C397B9A0CC1D9A3004EFC92 /* WavPackDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFA4B450ABDE11800C5AE9F /* WavPackDecoder.m */; };
+		8C397B9A0CC1D9A3004EFC92 /* WavPackDecoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8CFA4B450ABDE11800C5AE9F /* WavPackDecoder.mm */; };
 		8C401720094901A6003413BE /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C401716094901A6003413BE /* CoreAudio.framework */; };
 		8C5266BB0970E6FB008F1B55 /* Acknowledgments.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 8C5266BA0970E6FB008F1B55 /* Acknowledgments.rtf */; };
 		8C5300A10A05CFEA00890518 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C53009C0A05CFEA00890518 /* Task.m */; };
@@ -195,13 +195,13 @@
 		8CABDD580ABE621F00905814 /* FLACEncoderTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9450E60A12E3FC00C8DCAE /* FLACEncoderTask.m */; };
 		8CABDD990ABE654C00905814 /* OggVorbisEncoderTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C9450F00A12E3FC00C8DCAE /* OggVorbisEncoderTask.mm */; };
 		8CABDDC80ABE664100905814 /* OggFLACEncoderTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C9450EE0A12E3FC00C8DCAE /* OggFLACEncoderTask.mm */; };
-		8CABDE0D0ABE671D00905814 /* WavPackEncoderTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9450F40A12E3FC00C8DCAE /* WavPackEncoderTask.m */; };
+		8CABDE0D0ABE671D00905814 /* WavPackEncoderTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C9450F40A12E3FC00C8DCAE /* WavPackEncoderTask.mm */; };
 		8CABDE6C0ABE691400905814 /* MonkeysAudioEncoderTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C9450EA0A12E3FC00C8DCAE /* MonkeysAudioEncoderTask.mm */; };
 		8CABDE920ABE6A0600905814 /* OggSpeexSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CABDE900ABE6A0600905814 /* OggSpeexSettingsSheet.m */; };
 		8CABDF100ABE6E3B00905814 /* OggFLACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C53FF020A05CB8E00890518 /* OggFLACEncoder.m */; };
 		8CABDF550ABE703900905814 /* OggVorbisEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C53FF040A05CB8E00890518 /* OggVorbisEncoder.m */; };
 		8CABDF7E0ABE71F700905814 /* MonkeysAudioEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C53FEFE0A05CB8E00890518 /* MonkeysAudioEncoder.mm */; };
-		8CABDF9D0ABE731B00905814 /* WavPackEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C53FF080A05CB8E00890518 /* WavPackEncoder.m */; };
+		8CABDF9D0ABE731B00905814 /* WavPackEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C53FF080A05CB8E00890518 /* WavPackEncoder.mm */; };
 		8CABDFB70ABE751100905814 /* OggSpeexEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CABDED20ABE6AF900905814 /* OggSpeexEncoder.m */; };
 		8CABDFC70ABE768100905814 /* LibsndfileEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C53FEFC0A05CB8E00890518 /* LibsndfileEncoder.m */; };
 		8CBB34EE0CEFF42F004678FB /* FileConversionToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CBB34ED0CEFF42F004678FB /* FileConversionToolbar.m */; };
@@ -593,7 +593,7 @@
 		8C53FF030A05CB8E00890518 /* OggVorbisEncoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OggVorbisEncoder.h; sourceTree = "<group>"; };
 		8C53FF040A05CB8E00890518 /* OggVorbisEncoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OggVorbisEncoder.m; sourceTree = "<group>"; };
 		8C53FF070A05CB8E00890518 /* WavPackEncoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WavPackEncoder.h; sourceTree = "<group>"; };
-		8C53FF080A05CB8E00890518 /* WavPackEncoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = WavPackEncoder.m; sourceTree = "<group>"; };
+		8C53FF080A05CB8E00890518 /* WavPackEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = WavPackEncoder.mm; sourceTree = "<group>"; };
 		8C53FF250A05CC4600890518 /* FileFormatNotSupportedException.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileFormatNotSupportedException.h; sourceTree = "<group>"; };
 		8C53FF260A05CC4600890518 /* FileFormatNotSupportedException.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FileFormatNotSupportedException.m; sourceTree = "<group>"; };
 		8C53FF370A05CC4600890518 /* StopException.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = StopException.h; sourceTree = "<group>"; };
@@ -683,7 +683,7 @@
 		8C9450EF0A12E3FC00C8DCAE /* OggVorbisEncoderTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OggVorbisEncoderTask.h; sourceTree = "<group>"; };
 		8C9450F00A12E3FC00C8DCAE /* OggVorbisEncoderTask.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = OggVorbisEncoderTask.mm; sourceTree = "<group>"; };
 		8C9450F30A12E3FC00C8DCAE /* WavPackEncoderTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WavPackEncoderTask.h; sourceTree = "<group>"; };
-		8C9450F40A12E3FC00C8DCAE /* WavPackEncoderTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = WavPackEncoderTask.m; sourceTree = "<group>"; };
+		8C9450F40A12E3FC00C8DCAE /* WavPackEncoderTask.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = WavPackEncoderTask.mm; sourceTree = "<group>"; };
 		8C9450F60A12E3FC00C8DCAE /* BasicRipperTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BasicRipperTask.h; sourceTree = "<group>"; };
 		8C9450F70A12E3FC00C8DCAE /* BasicRipperTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BasicRipperTask.m; sourceTree = "<group>"; };
 		8C9450F80A12E3FC00C8DCAE /* ComparisonRipperTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ComparisonRipperTask.h; sourceTree = "<group>"; };
@@ -794,7 +794,7 @@
 		8CFA4B420ABDE11800C5AE9F /* OggVorbisDecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OggVorbisDecoder.h; path = Decoders/OggVorbisDecoder.h; sourceTree = "<group>"; };
 		8CFA4B430ABDE11800C5AE9F /* OggVorbisDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = OggVorbisDecoder.m; path = Decoders/OggVorbisDecoder.m; sourceTree = "<group>"; };
 		8CFA4B440ABDE11800C5AE9F /* WavPackDecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = WavPackDecoder.h; path = Decoders/WavPackDecoder.h; sourceTree = "<group>"; };
-		8CFA4B450ABDE11800C5AE9F /* WavPackDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = WavPackDecoder.m; path = Decoders/WavPackDecoder.m; sourceTree = "<group>"; };
+		8CFA4B450ABDE11800C5AE9F /* WavPackDecoder.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = WavPackDecoder.mm; path = Decoders/WavPackDecoder.mm; sourceTree = "<group>"; };
 		8CFA57390ABE32BB00C5AE9F /* OggSpeexEncoderTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OggSpeexEncoderTask.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Max.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Max.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1141,7 +1141,7 @@
 				121F7C072BF5937100D542B1 /* OggOpusEncoder.h */,
 				121F7C082BF5937100D542B1 /* OggOpusEncoder.m */,
 				8C53FF070A05CB8E00890518 /* WavPackEncoder.h */,
-				8C53FF080A05CB8E00890518 /* WavPackEncoder.m */,
+				8C53FF080A05CB8E00890518 /* WavPackEncoder.mm */,
 			);
 			path = Encoders;
 			sourceTree = "<group>";
@@ -1292,7 +1292,7 @@
 				121F7C052BF592D800D542B1 /* OpusEncoderTask.h */,
 				121F7C042BF592D800D542B1 /* OpusEncoderTask.mm */,
 				8C9450F30A12E3FC00C8DCAE /* WavPackEncoderTask.h */,
-				8C9450F40A12E3FC00C8DCAE /* WavPackEncoderTask.m */,
+				8C9450F40A12E3FC00C8DCAE /* WavPackEncoderTask.mm */,
 			);
 			name = EncoderTasks;
 			path = Tasks/EncoderTasks;
@@ -1418,7 +1418,7 @@
 				8CC9A0C50ACD90BF00948BAA /* ShortenDecoder.h */,
 				8CC9A0C60ACD90BF00948BAA /* ShortenDecoder.m */,
 				8CFA4B440ABDE11800C5AE9F /* WavPackDecoder.h */,
-				8CFA4B450ABDE11800C5AE9F /* WavPackDecoder.m */,
+				8CFA4B450ABDE11800C5AE9F /* WavPackDecoder.mm */,
 			);
 			name = Decoders;
 			sourceTree = "<group>";
@@ -1644,13 +1644,13 @@
 				8CABDD580ABE621F00905814 /* FLACEncoderTask.m in Sources */,
 				8CABDD990ABE654C00905814 /* OggVorbisEncoderTask.mm in Sources */,
 				8CABDDC80ABE664100905814 /* OggFLACEncoderTask.mm in Sources */,
-				8CABDE0D0ABE671D00905814 /* WavPackEncoderTask.m in Sources */,
+				8CABDE0D0ABE671D00905814 /* WavPackEncoderTask.mm in Sources */,
 				8CABDE6C0ABE691400905814 /* MonkeysAudioEncoderTask.mm in Sources */,
 				8CABDE920ABE6A0600905814 /* OggSpeexSettingsSheet.m in Sources */,
 				8CABDF100ABE6E3B00905814 /* OggFLACEncoder.m in Sources */,
 				8CABDF550ABE703900905814 /* OggVorbisEncoder.m in Sources */,
 				8CABDF7E0ABE71F700905814 /* MonkeysAudioEncoder.mm in Sources */,
-				8CABDF9D0ABE731B00905814 /* WavPackEncoder.m in Sources */,
+				8CABDF9D0ABE731B00905814 /* WavPackEncoder.mm in Sources */,
 				8CABDFB70ABE751100905814 /* OggSpeexEncoder.m in Sources */,
 				8CABDFC70ABE768100905814 /* LibsndfileEncoder.m in Sources */,
 				8C5E60860ACDC6F600D92D9A /* SecondsFormatter.m in Sources */,
@@ -1679,7 +1679,7 @@
 				8C397B970CC1D99F004EFC92 /* OggSpeexDecoder.m in Sources */,
 				8C397B980CC1D9A0004EFC92 /* OggVorbisDecoder.m in Sources */,
 				8C397B990CC1D9A2004EFC92 /* ShortenDecoder.m in Sources */,
-				8C397B9A0CC1D9A3004EFC92 /* WavPackDecoder.m in Sources */,
+				8C397B9A0CC1D9A3004EFC92 /* WavPackDecoder.mm in Sources */,
 				8C2682FF0CE95B8D00EF1929 /* MPEGDecoder.m in Sources */,
 				8CBB34EE0CEFF42F004678FB /* FileConversionToolbar.m in Sources */,
 				322E1EB30DC81AAB00CB6DDB /* OggSpeexEncoderTask.mm in Sources */,

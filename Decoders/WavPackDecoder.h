@@ -19,11 +19,8 @@
 #import <Cocoa/Cocoa.h>
 #import "Decoder.h"
 
-#include <wavpack/wavpack.h>
-
 @interface WavPackDecoder : Decoder
 {
-    WavpackContext					*_wpc;
 }
 
 @end

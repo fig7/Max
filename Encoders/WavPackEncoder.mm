@@ -24,7 +24,10 @@
 #include <AudioToolbox/AudioFile.h>
 #include <AudioToolbox/ExtendedAudioFile.h>
 
-#include <wavpack/wavpack.h>
+// Use a namespace to avoid clash with Apple's ChunkHeader
+namespace WP {
+	#include <wavpack/wavpack.h>
+}
 
 #import "Decoder.h"
 #import "RegionDecoder.h"
@@ -63,10 +66,10 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 		
 	int								fd, cfd;
 	int								result;
-    
-	WavpackContext					*wpc								= NULL;
-	WavpackConfig					config;
-	
+
+	WP::WavpackContext				*wpc								= NULL;
+	WP::WavpackConfig				config;
+
 	unsigned long					iterations							= 0;
 
 	int32_t							constructedSample;
@@ -154,7 +157,7 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 		// Setup the encoder
 		void* fdv = (void*) ((intptr_t) fd);
 		void* cfdv = (void*) ((intptr_t) cfd);
-		wpc = WavpackOpenFileOutput(writeWavPackBlock, fdv, (-1 == cfd ? NULL : cfdv));
+		wpc = WP::WavpackOpenFileOutput(writeWavPackBlock, fdv, (-1 == cfd ? NULL : cfdv));
 		NSAssert(NULL != wpc, NSLocalizedStringFromTable(@"Unable to create the WavPack encoder.", @"Exceptions", @""));
 		
 		memset(&config, 0, sizeof(config));
@@ -200,7 +203,7 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 			switch([decoder pcmFormat].mBitsPerChannel) {
 				
 				case 8:
-					buffer8 = bufferList.mBuffers[0].mData;
+					buffer8 = (int8_t*) bufferList.mBuffers[0].mData;
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
 							wpBuf[sample] = (int32_t)buffer8[sample];
@@ -209,7 +212,7 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 					break;
 					
 				case 16:
-					buffer16 = bufferList.mBuffers[0].mData;
+					buffer16 = (int16_t*) bufferList.mBuffers[0].mData;
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
 							wpBuf[sample] = (int32_t)(int16_t)OSSwapBigToHostInt16(buffer16[sample]);
@@ -218,7 +221,7 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 					break;
 					
 				case 24:
-					buffer8 = bufferList.mBuffers[0].mData;
+					buffer8 = (int8_t*) bufferList.mBuffers[0].mData;
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
 							constructedSample = (int8_t)*buffer8++; constructedSample <<= 8;
@@ -231,7 +234,7 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 					break;
 					
 				case 32:
-					buffer32 = bufferList.mBuffers[0].mData;
+					buffer32 = (int32_t*) bufferList.mBuffers[0].mData;
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
 							wpBuf[sample] = (int32_t)OSSwapBigToHostInt32(buffer32[sample]);
