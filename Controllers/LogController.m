@@ -16,6 +16,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import <UniformTypeIdentifiers/UTCoreTypes.h>
+
 #import "LogController.h"
 
 static LogController	*sharedLog = nil;
@@ -118,10 +120,10 @@ static NSString			*ClearLogToolbarItemIdentifier		= @"org.sbooth.Max.Log.Toolbar
 {
 	NSSavePanel *panel = [NSSavePanel savePanel];
 
-	panel.allowedFileTypes = @[@"rtf"];
+	panel.allowedContentTypes = @[UTTypeRTF];
 
 	[panel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-		if(NSOKButton == result) {
+		if(NSModalResponseOK == result) {
 			@synchronized(self) {
 				NSString						*filename		= [[panel URL] path];
 				NSMutableAttributedString		*logMessage		= [[NSMutableAttributedString alloc] init];
@@ -198,14 +200,13 @@ static NSString			*ClearLogToolbarItemIdentifier		= @"org.sbooth.Max.Log.Toolbar
 - (NSArray *) toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar 
 {
     return [NSArray arrayWithObjects: SaveLogToolbarItemIdentifier, ClearLogToolbarItemIdentifier, 
-		NSToolbarFlexibleSpaceItemIdentifier, NSToolbarCustomizeToolbarItemIdentifier, nil];
+		NSToolbarFlexibleSpaceItemIdentifier, nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers:(NSToolbar *) toolbar 
 {
     return [NSArray arrayWithObjects: SaveLogToolbarItemIdentifier, ClearLogToolbarItemIdentifier, 
-		NSToolbarSeparatorItemIdentifier,  NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier,
-		NSToolbarCustomizeToolbarItemIdentifier,
+		NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier,
 		nil];
 }
 

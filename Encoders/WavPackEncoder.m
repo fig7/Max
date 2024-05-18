@@ -35,7 +35,8 @@
 // WavPack IO wrapper
 static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)			
 {
-	return (bcount == write((int)wv_id, data, bcount));
+	int fd = (int) ((intptr_t) wv_id);
+	return (bcount == write(fd, data, bcount));
 }
 
 @interface WavPackEncoder (Private)
@@ -151,7 +152,9 @@ static int writeWavPackBlock(void *wv_id, void *data, int32_t bcount)
 		}
 		
 		// Setup the encoder
-		wpc = WavpackOpenFileOutput(writeWavPackBlock, (void *)fd, (-1 == cfd ? NULL : (void *)cfd));
+		void* fdv = (void*) ((intptr_t) fd);
+		void* cfdv = (void*) ((intptr_t) cfd);
+		wpc = WavpackOpenFileOutput(writeWavPackBlock, fdv, (-1 == cfd ? NULL : cfdv));
 		NSAssert(NULL != wpc, NSLocalizedStringFromTable(@"Unable to create the WavPack encoder.", @"Exceptions", @""));
 		
 		memset(&config, 0, sizeof(config));

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005 - 2007 Stephen F. Booth <me@sbooth.org>
+ *  Copyright (C) 2024 Stephen F. Booth <me@sbooth.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,20 +20,18 @@
 
 #import "Encoder.h"
 
-// Tag values for Ogg Vorbis encoding modes
+// Tag values for Opus encoding modes
 enum {
-	VORBIS_MODE_QUALITY						= 0,
-	VORBIS_MODE_BITRATE						= 1,
+	OPUS_MODE_VBR						= 0,
+	OPUS_MODE_CVBR	  			= 1,
+  OPUS_MODE_HARD_CBR      = 2,
 };
 
-@interface OggVorbisEncoder : Encoder
+@interface OggOpusEncoder : Encoder
 {	
-	FILE					*_out;
-	
-	int						_mode;
-	float					_quality;
-	long					_bitrate;
-	BOOL					_cbr;
+	int		_mode;
+	int		_complexity;
+	long	_bitrate;
 }
 
 @end

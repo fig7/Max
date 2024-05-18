@@ -78,7 +78,7 @@ static void unmountCallback(DADiskRef disk, DADissenterRef dissenter, void * con
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred on device %s.", @"Exceptions", @""), DADiskGetBSDName(disk)]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -112,7 +112,7 @@ static void ejectCallback(DADiskRef disk, DADissenterRef dissenter, void * conte
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred on device %s.", @"Exceptions", @""), DADiskGetBSDName(disk)]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -139,7 +139,7 @@ static MediaController *sharedController = nil;
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while initializing the %@ class.", @"Exceptions", @""), @"MediaController"]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -203,8 +203,6 @@ static MediaController *sharedController = nil;
 	NSString				*filename		= nil;
 	NSString				*oldFilename	= nil;
 	NSURL					*url			= nil;
-	CompactDiscDocument		*doc			= nil;
-	NSError					*err			= nil;
 	BOOL					newDisc			= NO;
 	
 	@try {
@@ -224,36 +222,42 @@ static MediaController *sharedController = nil;
 		if(NO == [[NSFileManager defaultManager] fileExistsAtPath:filename]) {
 			[[NSFileManager defaultManager] createFileAtPath:filename contents:nil attributes:nil];
 			newDisc = YES;
+		} else {
+			// TODO: Fix disc ids
+			[[NSFileManager defaultManager] removeItemAtPath:filename error:nil];
+			[[NSFileManager defaultManager] createFileAtPath:filename contents:nil attributes:nil];
+			newDisc = YES;
 		}
-		
-		doc	= [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:NO error:&err];
-		
-		if(nil != doc) {
-			[doc setDisc:disc];
-			
-			if(0 == [[doc windowControllers] count]) {
-				[doc makeWindowControllers];
-				[doc showWindows];
-			}
-			
-			// Automatically query MusicBrainz for new discs if desired
-			if(newDisc) {
-				if([[NSUserDefaults standardUserDefaults] boolForKey:@"automaticallyQueryMusicBrainz"])
-					[doc queryMusicBrainzNonInteractive];
 
-				if([[NSUserDefaults standardUserDefaults] boolForKey:@"automaticallySaveMusicBrainzInfo"])
-					[doc saveDocument:self];
+		[[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:NO completionHandler:^(NSDocument * _Nullable document, BOOL documentWasAlreadyOpen, NSError * _Nullable error) {
+			CompactDiscDocument* doc = (CompactDiscDocument*) document;
+			if(nil != doc) {
+				[doc setDisc:disc];
+
+				if(0 == [[doc windowControllers] count]) {
+					[doc makeWindowControllers];
+					[doc showWindows];
+				}
+
+				// Automatically query MusicBrainz for new discs if desired
+				if(newDisc) {
+					if([[NSUserDefaults standardUserDefaults] boolForKey:@"automaticallyQueryMusicBrainz"])
+						[doc queryMusicBrainzNonInteractive];
+
+					if([[NSUserDefaults standardUserDefaults] boolForKey:@"automaticallySaveMusicBrainzInfo"])
+						[doc saveDocument:self];
+				}
+
+				// Automatic rip/encode functionality
+				if([[NSUserDefaults standardUserDefaults] boolForKey:@"automaticallyEncodeTracks"] && (NO == [[NSUserDefaults standardUserDefaults] boolForKey:@"onFirstInsertOnly"] || newDisc)) {
+					[doc selectAll:self];
+					//[[doc objectInTracksAtIndex:0] setSelected:YES];
+					[doc encode:self];
+				}
 			}
-			
-			// Automatic rip/encode functionality
-			if([[NSUserDefaults standardUserDefaults] boolForKey:@"automaticallyEncodeTracks"] && (NO == [[NSUserDefaults standardUserDefaults] boolForKey:@"onFirstInsertOnly"] || newDisc)) {
-				[doc selectAll:self];
-				//[[doc objectInTracksAtIndex:0] setSelected:YES];
-				[doc encode:self];
-			}
-		}
-		else
-			[[NSDocumentController sharedDocumentController] presentError:err];
+			else
+				[[NSDocumentController sharedDocumentController] presentError:error];
+		}];
 	}
 	
 	@catch(NSException *exception) {
@@ -261,7 +265,7 @@ static MediaController *sharedController = nil;
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while accessing the disc on device %@.", @"Exceptions", @""), deviceName]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }

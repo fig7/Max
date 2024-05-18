@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/* // Code commented out as mad is not included in AudioXCFrameworks
 #import <Cocoa/Cocoa.h>
 #import "Decoder.h"
 
@@ -54,3 +55,4 @@
 }
 
 @end
+*/

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005 - 2007 Stephen F. Booth <me@sbooth.org>
+ *  Copyright (C) 2024 Stephen F. Booth <me@sbooth.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,22 +18,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "Encoder.h"
+#import "EncoderTask.h"
 
-// Tag values for Ogg Vorbis encoding modes
-enum {
-	VORBIS_MODE_QUALITY						= 0,
-	VORBIS_MODE_BITRATE						= 1,
-};
-
-@interface OggVorbisEncoder : Encoder
-{	
-	FILE					*_out;
-	
-	int						_mode;
-	float					_quality;
-	long					_bitrate;
-	BOOL					_cbr;
+@interface OpusEncoderTask : EncoderTask
+{
 }
 
 @end

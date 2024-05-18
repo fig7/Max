@@ -154,7 +154,7 @@
 {
 	if([typeName isEqualToString:@"Max CD Information"]) {
 		NSData					*data					= nil;
-		NSString				*error					= nil;
+		NSError				  *error				= nil;
 		NSMutableDictionary		*result					= [NSMutableDictionary dictionaryWithCapacity:10];
 		NSMutableArray			*tracks					= [NSMutableArray arrayWithCapacity:[self countOfTracks]];
 		NSUInteger				i;
@@ -183,11 +183,11 @@
 		
 		[result setValue:tracks forKey:@"tracks"];
 
-		data = [NSPropertyListSerialization dataFromPropertyList:result format:NSPropertyListXMLFormat_v1_0 errorDescription:&error];
+		data = [NSPropertyListSerialization dataWithPropertyList:result format:NSPropertyListXMLFormat_v1_0 options: 0 error:&error];
 		if(nil != data)
 			return data;
 		else
-			*outError = [NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:[NSDictionary dictionaryWithObject:[error autorelease] forKey:NSLocalizedFailureReasonErrorKey]];
+			*outError = error;
 	}
 	return nil;
 }
@@ -197,9 +197,9 @@
 	if([typeName isEqualToString:@"Max CD Information"]) {
 		NSDictionary			*dictionary;
 		NSPropertyListFormat	format;
-		NSString				*error;
-		
-		dictionary = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&error];
+		NSError				*error;
+
+		dictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:&format error:&error];
 		if(nil != dictionary) {
 			NSUInteger				i;
 			NSArray					*tracks			= [dictionary valueForKey:@"tracks"];
@@ -259,8 +259,6 @@
 			// Convert PNG data to an NSImage
 			_albumArt				= [[NSImage alloc] initWithData:[dictionary valueForKey:@"albumArt"]];
 		}
-		else
-			[error release];
 
 		return YES;
 	}
@@ -368,7 +366,7 @@
 			[alert addButtonWithTitle: NSLocalizedStringFromTable(@"Show Preferences", @"General", @"")];
 			[alert setMessageText:NSLocalizedStringFromTable(@"No output formats are selected.", @"General", @"")];
 			[alert setInformativeText:NSLocalizedStringFromTable(@"Please select one or more output formats.", @"General", @"")];
-			[alert setAlertStyle: NSWarningAlertStyle];
+			[alert setAlertStyle: NSAlertStyleWarning];
 			
 			result = [alert runModal];
 			
@@ -454,11 +452,11 @@
 	}
 	
 	@catch(NSException *exception) {
-		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+		NSAlert *alert = [[NSAlert alloc] init];
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while ripping tracks from the disc \"%@\".", @"Exceptions", @""), (nil == [self title] ? [self discID] : [self title])]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[self displayExceptionAlert:alert];
 	}
 }
@@ -475,7 +473,7 @@
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Do you want to eject the disc \"%@\" while ripping is in progress?", @"CompactDisc", @""), (nil == [self title] ? [self discID] : [self title])]];
 		[alert setInformativeText:NSLocalizedStringFromTable(@"Your incomplete rips will be lost.", @"CompactDisc", @"")];
-		[alert setAlertStyle:NSWarningAlertStyle];
+		[alert setAlertStyle:NSAlertStyleWarning];
 		
 		if(NSAlertSecondButtonReturn == [alert runModal]) {
 			return;
@@ -497,6 +495,7 @@
 
 - (IBAction) submitDiscId:(id)sender;
 {
+	//TODO: Fix disc id
 	[[NSWorkspace sharedWorkspace] openURL:[[self disc] discIDSubmissionUrl]];
 }
 
@@ -515,7 +514,10 @@
 			}
 		}
 		else if(0 == [results count]) {
-			NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"")];
+			NSAlert *alert = [[NSAlert alloc] init];
+			alert.messageText     = NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"");
+			alert.informativeText = NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"");
+
 			[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 			}];
 		}
@@ -529,7 +531,7 @@
 			MusicBrainzMatchSheet	*sheet		= [[MusicBrainzMatchSheet alloc] init];
 			[sheet setValue:results forKey:@"matches"];
 			[[self windowForSheet] beginSheet:[sheet sheet] completionHandler:^(NSModalResponse returnCode) {
-				if(NSOKButton == returnCode) {
+				if(NSModalResponseOK == returnCode) {
 					NSDictionary *release = [sheet selectedRelease];
 					[self updateMetadataFromMusicBrainz:release];
 					[self downloadAlbumArt:sender];
@@ -589,7 +591,10 @@
 				}
 			}
 			else if(0 == [results count]) {
-				NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"")];
+				NSAlert *alert = [[NSAlert alloc] init];
+				alert.messageText     = NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"");
+				alert.informativeText = NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"");
+
 				[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 				}];
 			}
@@ -603,7 +608,10 @@
 						}];
 					}
 					else if(nil == image) {
-						NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No album art.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No front cover art matching this disc was found.", @"CompactDisc", @"")];
+						NSAlert *alert = [[NSAlert alloc] init];
+						alert.messageText     = NSLocalizedStringFromTable(@"No album art.", @"CompactDisc", @"");
+						alert.informativeText = NSLocalizedStringFromTable(@"No front cover art matching this disc was found.", @"CompactDisc", @"");
+
 						[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 						}];
 					}
@@ -622,7 +630,10 @@
 				}];
 			}
 			else if(nil == image) {
-				NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No album art.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No front cover art matching this disc was found.", @"CompactDisc", @"")];
+				NSAlert *alert = [[NSAlert alloc] init];
+				alert.messageText     = NSLocalizedStringFromTable(@"No album art.", @"CompactDisc", @"");
+				alert.informativeText = NSLocalizedStringFromTable(@"No front cover art matching this disc was found.", @"CompactDisc", @"");
+
 				[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 				}];
 			}
@@ -640,10 +651,10 @@
 	[panel setAllowsMultipleSelection:NO];
 	[panel setCanChooseDirectories:NO];
 	[panel setCanChooseFiles:YES];
-	[panel setAllowedFileTypes:[NSImage imageFileTypes]];
-	
+	[panel setAllowedContentTypes:GetImageUTTypes()];
+
 	[panel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse result) {
-	    if(NSOKButton == result) {
+		if(NSModalResponseOK == result) {
 			for(NSURL *url in [panel URLs]) {
 				NSImage *image = [[NSImage alloc] initWithContentsOfURL:url];
 				if(nil != image) {
@@ -881,13 +892,10 @@
 		[alert runModal];
 	}
 	else {
-		[alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+		[alert beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
+			// Nothing for now
+		}];
 	}
-}
-
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo
-{
-	// Nothing for now
 }
 
 - (void) updateMetadataFromMusicBrainz:(NSDictionary *)releaseDictionary

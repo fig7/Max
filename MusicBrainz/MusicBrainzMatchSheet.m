@@ -25,7 +25,7 @@
 	if((self = [super init])) {
 		BOOL	result;
 		
-		result = [NSBundle loadNibNamed:@"MusicBrainzMatchSheet" owner:self];
+		result = [[NSBundle mainBundle] loadNibNamed:@"MusicBrainzMatchSheet" owner:self topLevelObjects:nil];
 		NSAssert1(YES == result, NSLocalizedStringFromTable(@"Your installation of Max appears to be incomplete.", @"Exceptions", @""), @"MusicBrainzMatchSheet.nib");
 		
 		return self;
@@ -44,7 +44,7 @@
 - (NSWindow *)		sheet					{ return [[_sheet retain] autorelease]; }
 - (NSDictionary *)	selectedRelease			{ return [[_matchesController selectedObjects] firstObject]; }
 
-- (IBAction)		cancel:(id)sender		{ [[NSApplication sharedApplication] endSheet:[self sheet] returnCode:NSCancelButton]; }
-- (IBAction)		ok:(id)sender			{ [[NSApplication sharedApplication] endSheet:[self sheet] returnCode:NSOKButton]; }
+- (IBAction)		cancel:(id)sender		{ [[NSApplication sharedApplication] endSheet:[self sheet] returnCode:NSModalResponseCancel]; }
+- (IBAction)		ok:(id)sender			{ [[NSApplication sharedApplication] endSheet:[self sheet] returnCode:NSModalResponseOK]; }
 
 @end

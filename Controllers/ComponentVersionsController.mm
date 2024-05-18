@@ -22,7 +22,11 @@
 #include <FLAC/format.h>
 #include <speex/speex.h>
 #include <sndfile/sndfile.h>
+
+#define PLATFORM_APPLE
 #include <mac/All.h>
+#undef PLATFORM_APPLE
+
 #include <wavpack/wavpack.h>
 
 #include <wchar.h>
@@ -77,7 +81,9 @@ static ComponentVersionsController *sharedController = nil;
 		
 		_flacVersion		= [NSString stringWithFormat:@"FLAC %s", FLAC__VERSION_STRING];
 		_lameVersion		= [NSString stringWithFormat:@"LAME %s", get_lame_version()];
-		_macVersion			= [NSString stringWithFormat:@"Monkey's Audio %@", [NSString stringWithWideString:MAC_VERSION_STRING]];
+
+    // TODO: Fix extracting MAC version
+		_macVersion			= [NSString stringWithFormat:@"Monkey's Audio %@", @"10.25" /* [NSString stringWithWideString:MAC_VERSION_STRING] */];
 
 		if(NULL != speexVersion) {
 			_speexVersion		= [NSString stringWithCString:speexVersion encoding:NSASCIIStringEncoding];

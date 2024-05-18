@@ -32,7 +32,7 @@
 		_settings		= [[NSMutableDictionary alloc] init];
 		[_settings addEntriesFromDictionary:settings];
 		
-		result = [NSBundle loadNibNamed:nibName owner:self];
+		result = [[NSBundle mainBundle] loadNibNamed:nibName owner:self topLevelObjects:nil];
 		NSAssert1(YES == result, NSLocalizedStringFromTable(@"Your installation of Max appears to be incomplete.", @"Exceptions", @""), [nibName stringByAppendingString:@".nib"]);
 		
 		return self;
@@ -70,8 +70,9 @@
 		newFormat	= [[self searchKey] mutableCopy];
 		
 		// Special case for Core Audio and Libsndfile subclasses
-		if([self respondsToSelector:@selector(formatName)]) {
-			[newFormat setObject:[self formatName] forKey:@"name"];
+		SEL formatName = NSSelectorFromString(@"formatName");
+		if([self respondsToSelector:formatName]) {
+			[newFormat setObject:[self performSelector:formatName] forKey:@"name"];
 		}
 		
 		[newFormat setObject:[self settings] forKey:@"settings"];
@@ -85,7 +86,7 @@
 	[formats release];
 
 	// We're finished
-	[[NSApplication sharedApplication] endSheet:[self sheet] returnCode:NSOKButton];
+	[[NSApplication sharedApplication] endSheet:[self sheet] returnCode:NSModalResponseOK];
 }
 
 @end

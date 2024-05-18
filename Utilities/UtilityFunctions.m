@@ -22,6 +22,8 @@
 
 #include <Carbon/Carbon.h>
 #include <Security/AuthSession.h>
+#import <UniformTypeIdentifiers/UTType.h>
+#import <UniformTypeIdentifiers/UTCoreTypes.h>
 
 #include <sys/param.h>
 
@@ -37,7 +39,7 @@ static NSArray				*sLibsndfileExtensions	= nil;
 static NSArray				*sBuiltinExtensions		= nil;
 
 NSString *
-GetApplicationDataDirectory()
+GetApplicationDataDirectory(void)
 {
 	@synchronized(sDataDirectory) {
 		if(nil == sDataDirectory) {
@@ -148,7 +150,7 @@ ValidateAndCreateDirectory(NSString *path)
 }
 
 NSArray * 
-GetBuiltinExtensions()
+GetBuiltinExtensions(void)
 {
 	@synchronized(sBuiltinExtensions) {
 		if(nil == sBuiltinExtensions) {
@@ -161,7 +163,7 @@ GetBuiltinExtensions()
 }
 
 NSArray *
-GetLibsndfileExtensions()
+GetLibsndfileExtensions(void)
 {
 	SF_FORMAT_INFO			formatInfo;
 	SF_INFO					info;
@@ -193,7 +195,7 @@ GetLibsndfileExtensions()
 }
 
 NSArray *
-GetAudioExtensions()
+GetAudioExtensions(void)
 {
 	@synchronized(sAudioExtensions) {
 		if(nil == sAudioExtensions) {
@@ -208,7 +210,7 @@ GetAudioExtensions()
 }
 
 NSString *
-GetID3v2Timestamp()
+GetID3v2Timestamp(void)
 {
 	@synchronized(sDateFormatter) {
 		if(nil == sDateFormatter) {
@@ -347,7 +349,7 @@ GetOggStreamType(NSString *filename)
 NSData *
 GetPNGDataForImage(NSImage *image)
 {
-	return GetBitmapDataForImage(image, NSPNGFileType); 
+  return GetBitmapDataForImage(image, NSBitmapImageFileTypePNG); 
 }
 
 NSData *
@@ -391,7 +393,8 @@ GetIconForFile(NSString *filename, NSSize iconSize)
 	
 
 	// Grab the file's icon
-	icon = (nil != filename ? [[NSWorkspace sharedWorkspace] iconForFile:filename] : [[NSWorkspace sharedWorkspace] iconForFileType:@""]);
+	NSWorkspace* workspace = [NSWorkspace sharedWorkspace];
+	icon = (nil != filename ? [workspace iconForFile:filename] : [workspace iconForContentType:UTTypeContent]);
 	[icon setSize:iconSize];
 	
 	// Check the image reps for one matching the desired size
@@ -408,7 +411,7 @@ GetIconForFile(NSString *filename, NSSize iconSize)
 		newIcon = [[[NSImage alloc] initWithSize:iconSize] autorelease];
 		[newIcon lockFocus];
 		[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-		[icon drawInRect:NSMakeRect(0, 0, iconSize.width, iconSize.height) fromRect:NSMakeRect(0, 0, [icon size].width, [icon size].height) operation:NSCompositeCopy fraction:1.0];
+    [icon drawInRect:NSMakeRect(0, 0, iconSize.width, iconSize.height) fromRect:NSMakeRect(0, 0, [icon size].width, [icon size].height) operation:NSCompositingOperationCopy fraction:1.0];
 		[newIcon unlockFocus];
 		icon = newIcon;
 	}
@@ -502,7 +505,7 @@ GenerateTemporaryFilename(NSString *directory, NSString *extension)
 	
 	// Get the current session id for constructing the pathname
 	result		= SessionGetInfo(callerSecuritySession, &sessionID, &sessionInfo);
-	NSCAssert1(noErr == result, @"SessionGetInfo failed: %@", UTCreateStringForOSType(result));
+	NSCAssert1(noErr == result, @"SessionGetInfo failed: %@", GetOSStatusError(result));
 
 	// Build the pathname
 	// Should look like [directory]/[applicationName]-[sessionID]-[XXXXXXXX].[extension]
@@ -568,4 +571,30 @@ FileContainsEmbeddedCueSheet(NSString *pathname)
 	FLAC__metadata_chain_delete(chain);
 	
 	return found;
+}
+
+NSString* GetOSStatusError(OSStatus status) {
+	NSError* error = [NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:nil];
+	return error.localizedDescription;
+}
+
+NSArray<UTType*>* GetImageUTTypes(void) {
+	// Maybe you can just use @[UTType.image]?
+	// Well, it appears that UTTypeImage includes things like GIMP .xcf files.
+	// Which, although correct, I imagine we can't use.
+
+	// Oddly, [NSImage imageTypes] returns some types that don't have corresponding UTTypes.
+	// So, we need to check for nil and we can't use those either.
+	NSArray<NSString*>* imageTypes  = [NSImage imageTypes];
+	NSMutableArray<UTType*>* utTypes = [NSMutableArray arrayWithCapacity:[imageTypes count]];
+	for(NSString* imageType in imageTypes) {
+		UTType* utType = [UTType typeWithIdentifier:imageType];
+		if(utType == nil) {
+			continue;
+		}
+
+		[utTypes addObject:utType];
+	}
+
+	return utTypes;
 }

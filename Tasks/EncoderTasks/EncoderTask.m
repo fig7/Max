@@ -169,7 +169,7 @@ enum {
 			[alert addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"General", @"")];
 			[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"The file \"%@\" exists.", @"General", @""), [[NSFileManager defaultManager] displayNameAtPath:filename]]];
 			[alert setInformativeText:NSLocalizedStringFromTable(@"Do you want to replace the existing file?", @"General", @"")];
-			[alert setAlertStyle:NSInformationalAlertStyle];
+			[alert setAlertStyle:NSAlertStyleInformational];
 			
 			NSInteger			result		= [alert runModal];
 			switch(result) {
@@ -206,12 +206,12 @@ enum {
 		NSDictionary *albumArtSettings	= [[[self taskInfo] settings] objectForKey:@"albumArt"];
 		
 		switch([[albumArtSettings objectForKey:@"extension"] intValue]) {
-			case kTIFFFileFormatMenuItemTag:		fileType = NSTIFFFileType;			extension = @"tiff";		break;
-			case kBMPFileFormatMenuItemTag:			fileType = NSBMPFileType;			extension = @"bmp";			break;
-			case kGIFFileFormatMenuItemTag:			fileType = NSGIFFileType;			extension = @"gif";			break;
-			case kJPEGFileFormatMenuItemTag:		fileType = NSJPEGFileType;			extension = @"jpeg";		break;
-			case kPNGFileFormatMenuItemTag:			fileType = NSPNGFileType;			extension = @"png";			break;
-			case kJPEG200FileFormatMenuItemTag:		fileType = NSJPEG2000FileType;		extension = @"jpeg";		break;
+			case kTIFFFileFormatMenuItemTag:		fileType = NSBitmapImageFileTypeTIFF;			extension = @"tiff";		break;
+			case kBMPFileFormatMenuItemTag:			fileType = NSBitmapImageFileTypeBMP;			extension = @"bmp";			break;
+			case kGIFFileFormatMenuItemTag:			fileType = NSBitmapImageFileTypeGIF;			extension = @"gif";			break;
+			case kJPEGFileFormatMenuItemTag:		fileType = NSBitmapImageFileTypeJPEG;			extension = @"jpeg";		break;
+			case kPNGFileFormatMenuItemTag:			fileType = NSBitmapImageFileTypePNG;			extension = @"png";			break;
+			case kJPEG200FileFormatMenuItemTag:		fileType = NSBitmapImageFileTypeJPEG2000;		extension = @"jpeg";		break;
 		}
 		
 		NSString *namingScheme = [albumArtSettings objectForKey:@"formatString"];
@@ -365,7 +365,7 @@ enum {
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while tagging the file \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:[self outputFilename]]]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 	
@@ -412,7 +412,7 @@ enum {
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while encoding the file \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:[self outputFilename]]]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -437,7 +437,7 @@ enum {
 	[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 	[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while encoding the file \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:[self outputFilename]]]];
 	[alert setInformativeText:[[self exception] reason]];
-	[alert setAlertStyle:NSWarningAlertStyle];		
+	[alert setAlertStyle:NSAlertStyleWarning];		
 	[alert runModal];
 }
 

@@ -19,7 +19,7 @@
 #import <Cocoa/Cocoa.h>
 #import "Decoder.h"
 
-#include <mpcdec/mpcdec.h>
+#include <mpc/mpcdec.h>
 
 @interface MusepackDecoder : Decoder
 {

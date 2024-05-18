@@ -131,10 +131,11 @@ static RipperController *sharedController = nil;
 		[metadata setTrackDate:nil];
 		[metadata setISRC:nil];
 
+    // Code commented out as Paranoia is not included in AudioXCFrameworks
 		switch(selectedRipper) {
 			case kBasicRipper:		ripperTask = [[BasicRipperTask alloc] initWithTracks:tracks];		break;
 			case kComparisonRipper:	ripperTask = [[ComparisonRipperTask alloc] initWithTracks:tracks];	break;
-			case kParanoiaRipper:	ripperTask = [[ParanoiaRipperTask alloc] initWithTracks:tracks];	break;
+			// case kParanoiaRipper:	ripperTask = [[ParanoiaRipperTask alloc] initWithTracks:tracks];	break;
 			default:				ripperTask = [[ComparisonRipperTask alloc] initWithTracks:tracks];	break;
 		}
 		
@@ -157,10 +158,11 @@ static RipperController *sharedController = nil;
 		Track			*track;
 
 		for(track in tracks) {
+      // Code commented out as Paranoia is not included in AudioXCFrameworks
 			switch(selectedRipper) {
 				case kBasicRipper:		ripperTask = [[BasicRipperTask alloc] initWithTracks:[NSArray arrayWithObject:track]];		break;
 				case kComparisonRipper:	ripperTask = [[ComparisonRipperTask alloc] initWithTracks:[NSArray arrayWithObject:track]];	break;
-				case kParanoiaRipper:	ripperTask = [[ParanoiaRipperTask alloc] initWithTracks:[NSArray arrayWithObject:track]];	break;
+				// case kParanoiaRipper:	ripperTask = [[ParanoiaRipperTask alloc] initWithTracks:[NSArray arrayWithObject:track]];	break;
 				default:				ripperTask = [[ComparisonRipperTask alloc] initWithTracks:[NSArray arrayWithObject:track]];	break;
 			}
 			

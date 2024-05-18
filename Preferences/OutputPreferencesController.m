@@ -77,7 +77,7 @@ enum {
 	[_temporaryDirectoryPopUpButton selectItemWithTag:(nil != [[NSUserDefaults standardUserDefaults] stringForKey:@"temporaryDirectory"] ? kCurrentTempDirectoryMenuItemTag : kDefaultTempDirectoryMenuItemTag)];	
 	
 	// Deselect all items in the File Format Specifier NSPopUpButton
-	[[_formatSpecifierPopUpButton selectedItem] setState:NSOffState];
+	[[_formatSpecifierPopUpButton selectedItem] setState:NSControlStateValueOff];
 	[_formatSpecifierPopUpButton selectItemAtIndex:-1];
 	[_formatSpecifierPopUpButton synchronizeTitleAndSelectedItem];
 		
@@ -110,7 +110,7 @@ enum {
 
 				switch(result) {
 
-					case NSOKButton:
+					case NSModalResponseOK:
 						for(NSURL *url in [panel URLs]) {
 							[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"convertInPlace"];
 							[[NSUserDefaults standardUserDefaults] setObject:[[url path] stringByAbbreviatingWithTildeInPath] forKey:@"outputDirectory"];
@@ -120,7 +120,7 @@ enum {
 						[_outputDirectoryPopUpButton selectItemWithTag:kCurrentDirectoryMenuItemTag];
 						break;
 
-					case NSCancelButton:
+					case NSModalResponseCancel:
 						[self updateOutputDirectoryMenuItemImage];
 						[_outputDirectoryPopUpButton selectItemWithTag:([[NSUserDefaults standardUserDefaults] boolForKey:@"convertInPlace"] ? kSameAsSourceFileMenuItemTag : kCurrentDirectoryMenuItemTag)];
 						break;
@@ -226,7 +226,7 @@ enum {
 
 				switch(result) {
 
-					case NSOKButton:
+					case NSModalResponseOK:
 						for(NSURL *url in [panel URLs]) {
 							[[NSUserDefaults standardUserDefaults] setObject:[[url path] stringByAbbreviatingWithTildeInPath] forKey:@"temporaryDirectory"];
 							[self updateTemporaryDirectoryMenuItemImage];
@@ -235,7 +235,7 @@ enum {
 						[_temporaryDirectoryPopUpButton selectItemWithTag:kCurrentTempDirectoryMenuItemTag];
 						break;
 
-					case NSCancelButton:
+					case NSModalResponseCancel:
 						[_temporaryDirectoryPopUpButton selectItemWithTag:(nil != [[NSUserDefaults standardUserDefaults] stringForKey:@"temporaryDirectory"] ? kCurrentTempDirectoryMenuItemTag : kDefaultTempDirectoryMenuItemTag)];
 						break;
 				}

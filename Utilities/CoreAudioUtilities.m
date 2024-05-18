@@ -25,6 +25,8 @@
 #include <AudioToolbox/AudioConverter.h>
 #include <AudioUnit/AudioCodec.h>
 
+#include "UtilityFunctions.h"
+
 // Prototypes
 static NSMutableArray *			GetCoreAudioEncodeFormats(void);
 static BOOL						FormatIDIsValidForOutput(UInt32 formatID);
@@ -58,7 +60,7 @@ static NSArray *sAudioExtensions	= nil;
 
 // Returns an array of valid formatIDs for encoding
 static NSMutableArray *
-GetCoreAudioEncodeFormats() 
+GetCoreAudioEncodeFormats(void)
 {
 	UInt32			*writableFormats	= NULL;
 	NSMutableArray	*result				= nil;	
@@ -67,7 +69,7 @@ GetCoreAudioEncodeFormats()
 		UInt32		size	= 0;
 		OSStatus	err		= AudioFormatGetPropertyInfo(kAudioFormatProperty_EncodeFormatIDs, 0, NULL, &size);
 
-		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFormatGetPropertyInfo", UTCreateStringForOSType(err));
+		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"AudioFormatGetPropertyInfo", GetOSStatusError(err));
 
 		writableFormats = malloc(size);
 		
@@ -78,7 +80,7 @@ GetCoreAudioEncodeFormats()
 
 		err = AudioFormatGetProperty(kAudioFormatProperty_EncodeFormatIDs, 0, NULL, &size, writableFormats);
 		
-		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFormatGetProperty", UTCreateStringForOSType(err));
+		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFormatGetProperty", GetOSStatusError(err));
 
 		unsigned i;
 		for(i = 0; i < numWritableFormats; ++i)
@@ -116,14 +118,14 @@ GetCoreAudioFileDataFormats(OSType filetype)
 	@try {
 		UInt32 size;
 		OSStatus err = AudioFileGetGlobalInfoSize(kAudioFileGlobalInfo_AvailableFormatIDs, sizeof(UInt32), &filetype, &size);
-		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfoSize", UTCreateStringForOSType(err));
+		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfoSize", GetOSStatusError(err));
 
 		unsigned numDataFormats	= size / sizeof(OSType);
 		formatIDs		= malloc(size);
 		NSCAssert(NULL != formatIDs, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
 
 		err = AudioFileGetGlobalInfo(kAudioFileGlobalInfo_AvailableFormatIDs, sizeof(UInt32), &filetype, &size, formatIDs);
-		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
+		NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
 
 		result = [NSMutableArray arrayWithCapacity:numDataFormats];
 		
@@ -135,7 +137,7 @@ GetCoreAudioFileDataFormats(OSType filetype)
 			[dfi setObject:[NSNumber numberWithUnsignedLong:formatIDs[j]] forKey:@"formatID"];
 			
 			err = AudioFileGetGlobalInfoSize(kAudioFileGlobalInfo_AvailableStreamDescriptionsForFormat, sizeof(AudioFileTypeAndFormatID), &tf, &size);
-			NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfoSize", UTCreateStringForOSType(err));
+			NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfoSize", GetOSStatusError(err));
 
 			variants = malloc(size);
 			NSCAssert(NULL != variants, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
@@ -144,7 +146,7 @@ GetCoreAudioFileDataFormats(OSType filetype)
 			NSMutableArray	*variantsA		= [NSMutableArray arrayWithCapacity:numVariants];
 
 			err = AudioFileGetGlobalInfo(kAudioFileGlobalInfo_AvailableStreamDescriptionsForFormat, sizeof(AudioFileTypeAndFormatID), &tf, &size, variants);
-			NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
+			NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
 
 			unsigned k;
 			for(k = 0; k < numVariants; ++k) {
@@ -223,7 +225,7 @@ GetCoreAudioFileDataFormats(OSType filetype)
 							err = AudioConverterGetProperty(dummyConverter, kAudioConverterEncodeBitRate, &size, &defaultBitrate);
 
 							if(noErr != err)
-								NSLog(@"kAudioConverterEncodeBitRate failed: err = %@", UTCreateStringForOSType(err));
+								NSLog(@"kAudioConverterEncodeBitRate failed: err = %@", GetOSStatusError(err));
 
 							[d setObject:[NSNumber numberWithUnsignedLong:defaultBitrate / 1000] forKey:@"bitrate"];
 							
@@ -300,7 +302,7 @@ GetCoreAudioFileDataFormats(OSType filetype)
 
 					// Cleanup
 					err = AudioConverterDispose(dummyConverter);
-					NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioConverterDispose", UTCreateStringForOSType(err));
+					NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioConverterDispose", GetOSStatusError(err));
 				}
 
 				NSString *description = nil;
@@ -347,7 +349,7 @@ GetCoreAudioFileTypeInfo(OSType filetype)
 	UInt32		size	= sizeof(fileTypeName);
 	OSStatus	err		= AudioFileGetGlobalInfo(kAudioFileGlobalInfo_FileTypeName, sizeof(UInt32), &filetype, &size, &fileTypeName);
 	
-	NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
+	NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
 
 	if(fileTypeName)
 		[result setObject:fileTypeName forKey:@"fileTypeName"];
@@ -356,7 +358,7 @@ GetCoreAudioFileTypeInfo(OSType filetype)
 	size	= sizeof(extensions);
 	err		= AudioFileGetGlobalInfo(kAudioFileGlobalInfo_ExtensionsForType, sizeof(OSType), &filetype, &size, &extensions);
 
-	NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
+	NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
 
 	if(extensions)
 		[result setObject:extensions forKey:@"extensionsForType"];
@@ -368,7 +370,7 @@ GetCoreAudioFileTypeInfo(OSType filetype)
 
 // Return an array of information on valid formats for output
 NSArray *
-GetCoreAudioWritableTypes()
+GetCoreAudioWritableTypes(void)
 {
 	UInt32 *fileFormats = NULL;
 
@@ -378,7 +380,7 @@ GetCoreAudioWritableTypes()
 				UInt32		size;
 				OSStatus	err		= AudioFileGetGlobalInfoSize(kAudioFileGlobalInfo_WritableTypes, 0, NULL, &size);
 
-				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
+				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
 
 				fileFormats = malloc(size);
 				
@@ -389,8 +391,8 @@ GetCoreAudioWritableTypes()
 
 				err = AudioFileGetGlobalInfo(kAudioFileGlobalInfo_WritableTypes, 0, NULL, &size, fileFormats);
 				
-				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
-				
+				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
+
 				unsigned i;
 				for(i = 0; i < numFileFormats; ++i) {
 					NSMutableDictionary		*d					= [NSMutableDictionary dictionaryWithCapacity:3];
@@ -439,7 +441,7 @@ GetCoreAudioWritableTypes()
 
 // Return an array of information on valid formats for input
 NSArray *
-GetCoreAudioReadableTypes()
+GetCoreAudioReadableTypes(void)
 {
 	UInt32 *fileFormats = NULL;
 	
@@ -449,7 +451,7 @@ GetCoreAudioReadableTypes()
 				UInt32		size;
 				OSStatus	err		= AudioFileGetGlobalInfoSize(kAudioFileGlobalInfo_ReadableTypes, 0, NULL, &size);
 
-				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfoSize", UTCreateStringForOSType(err));
+				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfoSize", GetOSStatusError(err));
 
 				fileFormats = malloc(size);
 				
@@ -460,8 +462,8 @@ GetCoreAudioReadableTypes()
 				
 				err = AudioFileGetGlobalInfo(kAudioFileGlobalInfo_ReadableTypes, 0, NULL, &size, fileFormats);
 				
-				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
-				
+				NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
+
 				unsigned i;
 				for(i = 0; i < numFileFormats; ++i) {
 					NSMutableDictionary *d = [NSMutableDictionary dictionaryWithCapacity:3];
@@ -490,15 +492,15 @@ GetCoreAudioReadableTypes()
 
 // Return an array of valid audio file extensions recognized by Core Audio
 NSArray *
-GetCoreAudioExtensions()
+GetCoreAudioExtensions(void)
 {
 	@synchronized(sAudioExtensions) {
 		if(nil == sAudioExtensions) {
 			UInt32		size	= sizeof(sAudioExtensions);
 			OSStatus	err		= AudioFileGetGlobalInfo(kAudioFileGlobalInfo_AllExtensions, 0, NULL, &size, &sAudioExtensions);
 
-			NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileGetGlobalInfo", UTCreateStringForOSType(err));
-			
+			NSCAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed. (%@)", @"Exceptions", @""), @"AudioFileGetGlobalInfo", GetOSStatusError(err));
+
 			[sAudioExtensions retain];
 		}
 	}
@@ -520,8 +522,8 @@ GetCoreAudioOutputFormatName(AudioFileTypeID fileType, UInt32 formatID, UInt32 f
 	UInt32		dataSize		= sizeof(fileFormat);
 	OSStatus	result			= AudioFileGetGlobalInfo(kAudioFileGlobalInfo_FileTypeName, specifierSize, &fileType, &dataSize, &fileFormat);
 	
-	NSCAssert1(noErr == result, @"AudioFileGetGlobalInfo failed: %@", UTCreateStringForOSType(result));
-	
+	NSCAssert1(noErr == result, @"AudioFileGetGlobalInfo failed: %@", GetOSStatusError(result));
+
 	// Determine the name of the format contained in the file (if specified)
 	if(0 != formatID) {
 		bzero(&asbd, sizeof(AudioStreamBasicDescription));
@@ -532,7 +534,7 @@ GetCoreAudioOutputFormatName(AudioFileTypeID fileType, UInt32 formatID, UInt32 f
 		specifierSize			= sizeof(audioFormat);
 		result					= AudioFormatGetProperty(kAudioFormatProperty_FormatName, sizeof(AudioStreamBasicDescription), &asbd, &specifierSize, &audioFormat);
 		
-		NSCAssert1(noErr == result, @"AudioFormatGetProperty failed: %@", UTCreateStringForOSType(result));
+		NSCAssert1(noErr == result, @"AudioFormatGetProperty failed: %@", GetOSStatusError(result));
 	}
 	
 	name = [NSString stringWithFormat:@"%@ (%@)", [fileFormat autorelease], [audioFormat autorelease]];

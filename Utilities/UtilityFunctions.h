@@ -94,7 +94,11 @@ NSString * GenerateTemporaryFilename(NSString *directory,
 
 // Returns YES if the file at pathname contains an embedded cue sheet
 BOOL FileContainsEmbeddedCueSheet(NSString *pathname);
-	
+
+NSString* GetOSStatusError(OSStatus status);
+
+NSArray<UTType*>* GetImageUTTypes(void);
+
 #ifdef __cplusplus
 }
 #endif

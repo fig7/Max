@@ -19,10 +19,12 @@
 #import "MonkeysAudioDecoder.h"
 #import "CircularBuffer.h"
 
+#define PLATFORM_APPLE
 #include <mac/All.h>
 #include <mac/MACLib.h>
 #include <mac/IO.h>
 #include <mac/CharacterHelper.h>
+#undef PLATFORM_APPLE
 
 #define SELF_DECOMPRESSOR	(reinterpret_cast<APE::IAPEDecompress *>(_decompressor))
 
@@ -37,16 +39,16 @@
 		APE::str_utfn *chars = APE::CAPECharacterHelper::GetUTF16FromANSI([[self filename] fileSystemRepresentation]);
 		NSAssert(NULL != chars, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
 		
-		_decompressor = (void *)CreateIAPEDecompress(chars, &result);
+		_decompressor = (void *)CreateIAPEDecompress(chars, &result, false, false, false);
 		NSAssert(NULL != _decompressor && ERROR_SUCCESS == result, @"Unable to open the input file.");
 		
 		// Setup input format descriptor
 		_pcmFormat.mFormatID			= kAudioFormatLinearPCM;
 		_pcmFormat.mFormatFlags			= kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsPacked;
 		
-		_pcmFormat.mSampleRate			= SELF_DECOMPRESSOR->GetInfo(APE::APE_INFO_SAMPLE_RATE);
-		_pcmFormat.mChannelsPerFrame	= (UInt32)SELF_DECOMPRESSOR->GetInfo(APE::APE_INFO_CHANNELS);
-		_pcmFormat.mBitsPerChannel		= (UInt32)SELF_DECOMPRESSOR->GetInfo(APE::APE_INFO_BITS_PER_SAMPLE);
+		_pcmFormat.mSampleRate			= SELF_DECOMPRESSOR->GetInfo(APE::IAPEDecompress::APE_INFO_SAMPLE_RATE);
+		_pcmFormat.mChannelsPerFrame		= (UInt32)SELF_DECOMPRESSOR->GetInfo(APE::IAPEDecompress::APE_INFO_CHANNELS);
+		_pcmFormat.mBitsPerChannel		= (UInt32)SELF_DECOMPRESSOR->GetInfo(APE::IAPEDecompress::APE_INFO_BITS_PER_SAMPLE);
 		
 		_pcmFormat.mBytesPerPacket		= (_pcmFormat.mBitsPerChannel / 8) * _pcmFormat.mChannelsPerFrame;
 		_pcmFormat.mFramesPerPacket		= 1;
@@ -66,7 +68,7 @@
 
 - (NSString *)		sourceFormatDescription			{ return [NSString stringWithFormat:@"%@, %u channels, %u Hz", NSLocalizedStringFromTable(@"Monkey's Audio", @"General", @""), [self pcmFormat].mChannelsPerFrame, (unsigned)[self pcmFormat].mSampleRate]; }
 
-- (SInt64)			totalFrames						{ return SELF_DECOMPRESSOR->GetInfo(APE::APE_DECOMPRESS_TOTAL_BLOCKS); }
+- (SInt64)			totalFrames						{ return SELF_DECOMPRESSOR->GetInfo(APE::IAPEDecompress::APE_DECOMPRESS_TOTAL_BLOCKS); }
 //- (SInt64)			currentFrame					{ return _myCurrentFrame; }
 
 - (BOOL)			supportsSeeking					{ return YES; }
@@ -86,17 +88,17 @@
 {
 	CircularBuffer		*buffer				= [self pcmBuffer];
 	int					result;
-	APE::intn			blockSize;
-	APE::intn			samplesRead;
+	APE::int64			blockSize;
+	APE::int64			samplesRead;
 	void				*rawBuffer;
 
 	
-	blockSize	= SELF_DECOMPRESSOR->GetInfo(APE::APE_INFO_BLOCK_ALIGN);
+	blockSize	= SELF_DECOMPRESSOR->GetInfo(APE::IAPEDecompress::APE_INFO_BLOCK_ALIGN);
 	NSAssert(0 != blockSize, @"Unable to determine the Monkey's Audio block size.");
 
 	rawBuffer	= [buffer exposeBufferForWriting];
 	
-	result		= SELF_DECOMPRESSOR->GetData((char *)rawBuffer, [buffer freeSpaceAvailable] / blockSize, &samplesRead);
+	result		= SELF_DECOMPRESSOR->GetData((unsigned char *)rawBuffer, [buffer freeSpaceAvailable] / blockSize, &samplesRead);
 	NSAssert(ERROR_SUCCESS == result, @"Monkey's Audio invalid checksum.");
 
 	// Convert host-ordered data to big-endian

@@ -27,10 +27,11 @@
 #import "MusicBrainzHelper.h"
 #import "UtilityFunctions.h"
 
-#include <discid/discid.h>
+// Code commented out as discid and cuetools are not included in AudioXCFrameworks
+/* #include <discid/discid.h>
 
 #include <cuetools/cd.h>
-#include <cuetools/cue.h>
+#include <cuetools/cue.h> */
 
 #include <FLAC/metadata.h>
 
@@ -140,6 +141,7 @@
 	return NO;
 }
 
+/* // Code commented out as cuetools is not included in AudioXCFrameworks
 // TODO: Replace with cue sheet parser from Play
 - (BOOL) readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
@@ -434,7 +436,7 @@
 		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
 
     return NO;
-}
+} */
 
 #pragma mark State
 
@@ -480,7 +482,7 @@
 		[alert addButtonWithTitle: NSLocalizedStringFromTable(@"Show Preferences", @"General", @"")];
 		[alert setMessageText:NSLocalizedStringFromTable(@"No output formats are selected.", @"General", @"")];
 		[alert setInformativeText:NSLocalizedStringFromTable(@"Please select one or more output formats.", @"General", @"")];
-		[alert setAlertStyle: NSWarningAlertStyle];
+		[alert setAlertStyle: NSAlertStyleWarning];
 		
 		result = [alert runModal];
 		
@@ -576,7 +578,7 @@
 			[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 			[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while converting the file \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:filename]]];
 			[alert setInformativeText:[exception reason]];
-			[alert setAlertStyle:NSWarningAlertStyle];		
+			[alert setAlertStyle:NSAlertStyleWarning];		
 			[alert runModal];
 		}			
 	}
@@ -598,7 +600,10 @@
 			}
 		}
 		else if(0 == [results count]) {
-			NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"")];
+			NSAlert *alert = [[NSAlert alloc] init];
+			alert.messageText     = NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"");
+			alert.informativeText = NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"");
+
 			[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 			}];
 		}
@@ -612,7 +617,7 @@
 			MusicBrainzMatchSheet	*sheet		= [[MusicBrainzMatchSheet alloc] init];
 			[sheet setValue:results forKey:@"matches"];
 			[[self windowForSheet] beginSheet:[sheet sheet] completionHandler:^(NSModalResponse returnCode) {
-				if(NSOKButton == returnCode) {
+			if(NSModalResponseOK == returnCode) {
 					NSDictionary *release = [sheet selectedRelease];
 					[self updateMetadataFromMusicBrainz:release];
 					[self downloadAlbumArt:sender];
@@ -671,7 +676,10 @@
 			}
 		}
 		else if(0 == [results count]) {
-			NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"")];
+			NSAlert* alert = [[NSAlert alloc] init];
+			alert.messageText     = NSLocalizedStringFromTable(@"No matches.", @"CompactDisc", @"");
+			alert.informativeText = NSLocalizedStringFromTable(@"No releases matching this disc were found in MusicBrainz.", @"CompactDisc", @"");
+
 			[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 			}];
 		}
@@ -686,7 +694,10 @@
 					}];
 				}
 				else if(nil == image) {
-					NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedStringFromTable(@"No album art.", @"CompactDisc", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedStringFromTable(@"No front cover art matching this disc was found.", @"CompactDisc", @"")];
+					NSAlert* alert = [[NSAlert alloc] init];
+					alert.messageText     = NSLocalizedStringFromTable(@"No album art.", @"CompactDisc", @"");
+					alert.informativeText = NSLocalizedStringFromTable(@"No front cover art matching this disc was found.", @"CompactDisc", @"");
+
 					[alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse returnCode) {
 					}];
 				}
@@ -705,10 +716,10 @@
 	[panel setAllowsMultipleSelection:NO];
 	[panel setCanChooseDirectories:NO];
 	[panel setCanChooseFiles:YES];
-	[panel setAllowedFileTypes:[NSImage imageFileTypes]];
-	
+	[panel setAllowedContentTypes:GetImageUTTypes()];
+
 	[panel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSModalResponse result) {
-		if(NSOKButton == result) {
+		if(NSModalResponseOK == result) {
 			for(NSURL *url in [panel URLs]) {
 				NSImage *image = [[NSImage alloc] initWithContentsOfURL:url];
 				if(nil != image)
@@ -756,8 +767,11 @@
 
 - (NSString *) discID
 {
-	NSString *musicBrainzDiscID = nil;
-	
+  return @"";
+
+  // Code commented out as discid is not included in AudioXCFrameworks
+  /* NSString *musicBrainzDiscID = nil;
+
 	DiscId *discID = discid_new();
 	if(NULL == discID)
 		return nil;
@@ -782,7 +796,7 @@
 		musicBrainzDiscID = [NSString stringWithCString:discid_get_id(discID) encoding:NSUTF8StringEncoding];
 	
 	discid_free(discID);
-	return [[musicBrainzDiscID retain] autorelease];
+	return [[musicBrainzDiscID retain] autorelease]; */
 }
 
 #pragma mark Mutators

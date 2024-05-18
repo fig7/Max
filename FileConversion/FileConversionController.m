@@ -166,7 +166,7 @@ static FileConversionController		*sharedController						= nil;
 		[alert addButtonWithTitle: NSLocalizedStringFromTable(@"Show Preferences", @"General", @"")];
 		[alert setMessageText:NSLocalizedStringFromTable(@"No output formats are selected.", @"General", @"")];
 		[alert setInformativeText:NSLocalizedStringFromTable(@"Please select one or more output formats.", @"General", @"")];
-		[alert setAlertStyle: NSWarningAlertStyle];
+		[alert setAlertStyle: NSAlertStyleWarning];
 		
 		NSInteger result = [alert runModal];
 		
@@ -257,7 +257,7 @@ static FileConversionController		*sharedController						= nil;
 			[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 			[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while converting the file \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:filename]]];
 			[alert setInformativeText:[exception reason]];
-			[alert setAlertStyle:NSWarningAlertStyle];		
+			[alert setAlertStyle:NSAlertStyleWarning];		
 			[alert runModal];
 		}			
 		
@@ -278,7 +278,7 @@ static FileConversionController		*sharedController						= nil;
 				[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 				[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while converting the file \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:filename]]];
 				[alert setInformativeText:[exception reason]];
-				[alert setAlertStyle:NSWarningAlertStyle];		
+				[alert setAlertStyle:NSAlertStyleWarning];		
 				[alert runModal];
 			}			
 		}
@@ -308,7 +308,7 @@ static FileConversionController		*sharedController						= nil;
 	[panel setAllowedFileTypes:GetAudioExtensions()];
 
 	[panel beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse result) {
-		if(NSOKButton == result) {
+    if(NSModalResponseOK == result) {
 			for(NSURL *url in [panel URLs])
 				[self addFile:[url path]];
 		}
@@ -428,10 +428,10 @@ static FileConversionController		*sharedController						= nil;
 	[panel setAllowsMultipleSelection:NO];
 	[panel setCanChooseDirectories:NO];
 	[panel setCanChooseFiles:YES];
-	[panel setAllowedFileTypes:[NSImage imageFileTypes]];
+	[panel setAllowedContentTypes:GetImageUTTypes()];
 
 	[panel beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse result) {
-	    if(NSOKButton == result) {
+    if(NSModalResponseOK == result) {
 			for(NSURL *url in [panel URLs]) {
 				NSImage *image = [[NSImage alloc] initWithContentsOfURL:url];
 				if(nil != image) {
@@ -491,7 +491,7 @@ static FileConversionController		*sharedController						= nil;
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while opening the document \"%@\".", @"Exceptions", @""), [[NSFileManager defaultManager] displayNameAtPath:filename]]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 		
 		return NO;

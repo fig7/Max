@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005 - 2007 Stephen F. Booth <me@sbooth.org>
+ *  Copyright (C) 2024 Stephen F. Booth <me@sbooth.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,24 +16,38 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <Cocoa/Cocoa.h>
+#import "OpusSettingsSheet.h"
+#import "OggOpusEncoder.h"
 
-#import "Encoder.h"
+@implementation OpusSettingsSheet
 
-// Tag values for Ogg Vorbis encoding modes
-enum {
-	VORBIS_MODE_QUALITY						= 0,
-	VORBIS_MODE_BITRATE						= 1,
-};
-
-@interface OggVorbisEncoder : Encoder
-{	
-	FILE					*_out;
++ (NSDictionary *) defaultSettings
+{
+	NSArray		*objects	= nil;
+	NSArray		*keys		= nil;
 	
-	int						_mode;
-	float					_quality;
-	long					_bitrate;
-	BOOL					_cbr;
+	objects = [NSArray arrayWithObjects:
+		[NSNumber numberWithInt:OPUS_MODE_VBR],
+		[NSNumber numberWithInt:10],
+		[NSNumber numberWithInt:7],
+		nil];
+	
+	keys = [NSArray arrayWithObjects:
+		@"mode", 
+		@"complexity",
+		@"bitrate",
+		nil];
+	
+	
+	return [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+}
+
+- (id) initWithSettings:(NSDictionary *)settings;
+{
+	if((self = [super initWithNibName:@"OpusSettingsSheet" settings:settings])) {
+		return self;
+	}
+	return nil;
 }
 
 @end

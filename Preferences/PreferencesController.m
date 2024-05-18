@@ -69,7 +69,7 @@ NSString *PostProcessingPreferencesToolbarItemIdentifier	= @"org.sbooth.Max.Pref
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while initializing the %@ class.", @"Exceptions", @""), @"PreferencesController"]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -269,10 +269,8 @@ NSString *PostProcessingPreferencesToolbarItemIdentifier	= @"org.sbooth.Max.Pref
 		AlbumArtPreferencesToolbarItemIdentifier,
 		iTunesPreferencesToolbarItemIdentifier,
 		PostProcessingPreferencesToolbarItemIdentifier,
-		NSToolbarSeparatorItemIdentifier,
 		NSToolbarSpaceItemIdentifier,
 		NSToolbarFlexibleSpaceItemIdentifier,
-		NSToolbarCustomizeToolbarItemIdentifier,
 		nil];
 }
 

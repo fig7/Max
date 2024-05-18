@@ -21,7 +21,9 @@
 #import "Drive.h"
 #import "LogController.h"
 
-#include <discid/discid.h>
+// Code commented out as discid is not included in AudioXCFrameworks
+// #include <discid/discid.h>
+
 #include <IOKit/storage/IOCDTypes.h>
 
 @implementation CompactDisc
@@ -126,10 +128,13 @@
 
 - (NSString *)		ISRCForTrack:(NSUInteger)track			{ return [[self objectInTracksAtIndex:track] objectForKey:@"ISRC"]; }
 
+// Code commented out as discid is not included in AudioXCFrameworks
 - (NSString *) discID
 {
-	NSString *musicBrainzDiscID = nil;
-	
+	return @"Testing2";
+
+	/* NSString *musicBrainzDiscID = nil;
+
 	DiscId *discID = discid_new();
 	if(NULL == discID)
 		return nil;
@@ -148,14 +153,15 @@
 		
 	discid_free(discID);
 	
-	return [[musicBrainzDiscID retain] autorelease];
+	return [[musicBrainzDiscID retain] autorelease]; */
 }
 
 - (NSURL *) discIDSubmissionUrl
 {
 	NSURL *submissionUrl = nil;
-	
-	DiscId *discID = discid_new();
+	return submissionUrl;
+
+	/* DiscId *discID = discid_new();
 	if(NULL == discID)
 		return nil;
 	
@@ -173,13 +179,15 @@
 	
 	discid_free(discID);
 	
-	return [[submissionUrl retain] autorelease];
+	return [[submissionUrl retain] autorelease]; */
 }
 
 - (NSString *) freeDBDiscID
 {
-	NSString *freeDBDiscID = nil;
-	
+	return @"Testing22";
+
+	/* NSString *freeDBDiscID = nil;
+
 	DiscId *discID = discid_new();
 	if(NULL == discID)
 		return nil;
@@ -198,7 +206,7 @@
 	
 	discid_free(discID);
 	
-	return [[freeDBDiscID retain] autorelease];
+	return [[freeDBDiscID retain] autorelease]; */
 }
 
 - (NSUInteger)		length									{ return _length; }

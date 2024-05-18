@@ -18,9 +18,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define PLATFORM_APPLE
 #include <mac/All.h>
 #include <mac/MACLib.h>
 #include <mac/APECompress.h>
+#undef PLATFORM_APPLE
 
 #import "Encoder.h"
 

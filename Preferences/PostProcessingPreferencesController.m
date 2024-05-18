@@ -16,6 +16,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import <UniformTypeIdentifiers/UTCoreTypes.h>
+
 #import "PostProcessingPreferencesController.h"
 #import "PreferencesController.h"
 #import "UtilityFunctions.h"
@@ -62,10 +64,10 @@
 	NSOpenPanel		*panel		= [NSOpenPanel openPanel];
 
 	[panel setAllowsMultipleSelection:YES];
-	[panel setAllowedFileTypes:@[@"app"]];
+	[panel setAllowedContentTypes:@[UTTypeApplication]];
 
 	[panel beginSheetModalForWindow:[[PreferencesController sharedPreferences] window] completionHandler:^(NSModalResponse result) {
-		if(NSOKButton == result) {
+    if(NSModalResponseOK == result) {
 			NSArray				*applications		= [panel URLs];
 			NSDictionary		*application		= nil;
 			NSString			*applicationPath	= nil;

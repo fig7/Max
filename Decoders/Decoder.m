@@ -72,10 +72,10 @@
 		result = [[WavPackDecoder alloc] initWithFilename:filename];
 	else if([extension isEqualToString:@"mpc"])
 		result = [[MusepackDecoder alloc] initWithFilename:filename];
-	else if([extension isEqualToString:@"shn"])
+	/*else if([extension isEqualToString:@"shn"])
 		result = [[ShortenDecoder alloc] initWithFilename:filename];
 	else if([extension isEqualToString:@"mp3"])
-		result = [[MPEGDecoder alloc] initWithFilename:filename];
+		result = [[MPEGDecoder alloc] initWithFilename:filename]; */
 	else if([coreAudioExtensions containsObject:extension])
 		result = [[CoreAudioDecoder alloc] initWithFilename:filename];
 	else if([libsndfileExtensions containsObject:extension])

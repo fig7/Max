@@ -19,10 +19,12 @@
 #import "MonkeysAudioEncoderTask.h"
 #import "MonkeysAudioEncoder.h"
 
+#define PLATFORM_APPLE
 #include <mac/All.h>
 #include <mac/MACLib.h>
 #include <mac/APETag.h>
 #include <mac/CharacterHelper.h>
+#undef PLATFORM_APPLE
 
 @interface AudioMetadata (TagMappings)
 + (APE::str_utfn *)		customizeAPETag:(NSString *)tag;

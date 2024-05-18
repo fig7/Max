@@ -90,11 +90,9 @@ static NSString		*MetadataToolbarItemIdentifier			= @"org.sbooth.Max.FileConvers
 - (NSArray *) toolbarAllowedItemIdentifiers:(NSToolbar *) toolbar 
 {
     return [NSArray arrayWithObjects:EncodeToolbarItemIdentifier, 
-			MetadataToolbarItemIdentifier, 
-			NSToolbarSeparatorItemIdentifier, 
+			MetadataToolbarItemIdentifier,
 			NSToolbarSpaceItemIdentifier, 
-			NSToolbarFlexibleSpaceItemIdentifier,
-			NSToolbarCustomizeToolbarItemIdentifier, 
+			NSToolbarFlexibleSpaceItemIdentifier, 
 			nil];
 }
 

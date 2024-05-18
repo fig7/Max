@@ -138,8 +138,7 @@ static NSString		*QueryMusicBrainzToolbarItemIdentifier		= @"org.sbooth.Max.CueS
 		MetadataToolbarItemIdentifier,
 		SelectPreviousTrackToolbarItemIdentifier, SelectNextTrackToolbarItemIdentifier,
 		QueryMusicBrainzToolbarItemIdentifier,
-		NSToolbarSeparatorItemIdentifier,  NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier,
-		NSToolbarCustomizeToolbarItemIdentifier, nil];
+		NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier, nil];
 }
 
 @end

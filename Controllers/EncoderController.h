@@ -31,7 +31,8 @@ enum {
 	kComponentMonkeysAudio		= 5,
 	kComponentOggVorbis			= 6,
 	kComponentMP3				= 7,
-	kComponentOggSpeex			= 8
+	kComponentOggSpeex			= 8,
+	kComponentOpus				= 9
 };
 
 @interface EncoderController : NSWindowController

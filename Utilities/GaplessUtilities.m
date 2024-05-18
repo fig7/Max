@@ -18,13 +18,14 @@
 
 #import "GaplessUtilities.h"
 
-#include <mp4v2/mp4v2.h>
+// Code commented out as mp4v2 is not included in AudioXCFrameworks
+// #include <mp4v2/mp4v2.h>
 
 void 
 addMPEG4AACGaplessInformationAtom(NSString *filename, SInt64 totalFrames)
 {
-	NSCParameterAssert(nil != filename);
-	
+	/* NSCParameterAssert(nil != filename);
+
 	MP4FileHandle file = MP4Modify([filename fileSystemRepresentation], 0);
 	if(file == MP4_INVALID_FILE_HANDLE)
 		return;
@@ -52,14 +53,14 @@ addMPEG4AACGaplessInformationAtom(NSString *filename, SInt64 totalFrames)
 	MP4ItmfAddItem(file, smpb);	
 	MP4ItmfItemFree(smpb);
 	
-	MP4Close(file, 0);
+	MP4Close(file, 0); */
 }
 
 void 
 addMPEG4AACBitrateInformationAtom(NSString *filename, UInt32 bitrate, int bitrateMode)
 {
-	NSCParameterAssert(nil != filename);
-	
+	/* NSCParameterAssert(nil != filename);
+
 	MP4FileHandle file = MP4Modify([filename fileSystemRepresentation], 0);
 	if(file == MP4_INVALID_FILE_HANDLE)
 		return;
@@ -107,5 +108,5 @@ addMPEG4AACBitrateInformationAtom(NSString *filename, UInt32 bitrate, int bitrat
 	MP4ItmfAddItem(file, smpb);	
 	MP4ItmfItemFree(smpb);
 	
-	MP4Close(file, 0);
+	MP4Close(file, 0); */
 }

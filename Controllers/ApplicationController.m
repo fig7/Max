@@ -83,7 +83,7 @@ static ApplicationController *sharedController = nil;
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while initializing the %@ class.", @"Exceptions", @""), @"ApplicationController"]];
 		[[LogController sharedController] logMessage:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while initializing the %@ class.", @"Exceptions", @""), @"ApplicationController"]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -165,7 +165,7 @@ static ApplicationController *sharedController = nil;
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"General", @"")];
 		[alert setMessageText:NSLocalizedStringFromTable(@"Do you want to quit while there are tasks in progress?", @"General", @"")];
 		[alert setInformativeText:NSLocalizedStringFromTable(@"The resulting files will be lost if you quit now.", @"General", @"")];
-		[alert setAlertStyle:NSWarningAlertStyle];
+		[alert setAlertStyle:NSAlertStyleWarning];
 		
 		if(NSAlertSecondButtonReturn == [alert runModal]) {
 			return NSTerminateCancel;
@@ -335,7 +335,7 @@ static ApplicationController *sharedController = nil;
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while opening the file \"%@\" for conversion.", @"Exceptions", @""), [[exception userInfo] objectForKey:@"filename"]]];
 		[[LogController sharedController] logMessage:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while opening the file \"%@\" for conversion.", @"Exceptions", @""), [[exception userInfo] objectForKey:@"filename"]]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 	
@@ -351,7 +351,7 @@ static ApplicationController *sharedController = nil;
 			[[LogController sharedController] logMessage:NSLocalizedStringFromTable(@"An error occurred during file conversion.", @"Exceptions", @"")];
 		}
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 

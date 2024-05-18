@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#if 0 // Code commented out as mad is not included in AudioXCFrameworks
 #import "MPEGDecoder.h"
 #import "CircularBuffer.h"
 
@@ -827,3 +828,4 @@ audio_linear_round(unsigned int bits,
 }
 
 @end
+#endif

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005 - 2020 Stephen F. Booth <me@sbooth.org>
+ *  Copyright (C) 2024 Stephen F. Booth <me@sbooth.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import "OggVorbisEncoder.h"
+#import "OggOpusEncoder.h"
 
-#include <vorbis/vorbisenc.h>
+#include <opus/opusenc.h>
 #include <CoreAudio/CoreAudioTypes.h>
 #include <AudioToolbox/AudioFormat.h>
 #include <AudioToolbox/AudioConverter.h>
@@ -33,40 +33,26 @@
 #import "UtilityFunctions.h"
 
 // My (semi-arbitrary) list of supported vorbis bitrates
-static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 };
+static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224, 240, 256 };
 
-@interface OggVorbisEncoder (Private)
+@interface OggOpusEncoder (Private)
 - (void)	parseSettings;
 @end
 
-@implementation OggVorbisEncoder
+@implementation OggOpusEncoder
 
 - (oneway void) encodeToFile:(NSString *) filename
 {
-	NSDate						*startTime							= [NSDate date];	
-	ogg_packet					header;
-	ogg_packet					header_comm;
-	ogg_packet					header_code;
-	
-	ogg_stream_state			os;
-	ogg_page					og;
-	ogg_packet					op;
-	
-	vorbis_info					vi;
-	vorbis_comment				vc;
-	
-	vorbis_dsp_state			vd;
-	vorbis_block				vb;
-		
-	float						**buffer;
-	
+  NSDate            *startTime              = [NSDate date];
+  opus_int16				*buffer;
+
 	int8_t						*buffer8							= NULL;
 	int16_t						*buffer16							= NULL;
 	int32_t						*buffer32							= NULL;
 	unsigned					wideSample;
 	unsigned					sample, channel;
 	
-	int32_t						constructedSample;
+  opus_int16						constructedSample;
 
 	BOOL						eos									= NO;
 
@@ -76,15 +62,18 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 	SInt64						totalFrames, framesToRead;
 	UInt32						frameCount;
 	
-	int							result;
-	size_t						numWritten;
-	
 	unsigned long				iterations							= 0;
 	
 	double						percentComplete;
 	NSTimeInterval				interval;
 	unsigned					secondsRemaining;
-	
+
+  opus_int32 sampleRate;
+  int numChannels;
+
+  OggOpusComments* comments;
+  OggOpusEnc* enc;
+
 	@try {
 		bufferList.mBuffers[0].mData = NULL;
 
@@ -108,14 +97,17 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 		else
 			decoder = [Decoder decoderWithFilename:sourceFilename];
 		
-		totalFrames			= [decoder totalFrames];
+    sampleRate  = (opus_int32) [decoder pcmFormat].mSampleRate;
+    numChannels = [decoder pcmFormat].mChannelsPerFrame;
+
+    totalFrames			= [decoder totalFrames];
 		framesToRead		= totalFrames;
 		
 		// Set up the AudioBufferList
 		bufferList.mNumberBuffers					= 1;
 		bufferList.mBuffers[0].mData				= NULL;
-		bufferList.mBuffers[0].mNumberChannels		= [decoder pcmFormat].mChannelsPerFrame;
-		
+		bufferList.mBuffers[0].mNumberChannels		= numChannels;
+
 		// Allocate the buffer that will hold the interleaved audio data
 		bufferLen									= 1024;
 		switch([decoder pcmFormat].mBitsPerChannel) {
@@ -144,86 +136,56 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 		bufferByteSize = bufferList.mBuffers[0].mDataByteSize;
 		NSAssert(NULL != bufferList.mBuffers[0].mData, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
 		
+    buffer = calloc(bufferLen, sizeof(opus_int16));
+    NSAssert(NULL != buffer, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
+
 		// Open the output file
-		_out = fopen([filename fileSystemRepresentation], "w");
-		NSAssert(NULL != _out, NSLocalizedStringFromTable(@"Unable to create the output file.", @"Exceptions", @""));
-		
+    const char* _out = [filename fileSystemRepresentation];
+    comments = ope_comments_create();
+    enc = ope_encoder_create_file(_out, comments, (opus_int32) decoder.pcmFormat.mSampleRate, numChannels, 0, NULL);
+		NSAssert(NULL != enc, NSLocalizedStringFromTable(@"Unable to create the output file.", @"Exceptions", @""));
+
 		// Check if we should stop, and if so throw an exception
 		if([[self delegate] shouldStop])
 			@throw [StopException exceptionWithReason:@"Stop requested by user" userInfo:nil];
-		
+
 		// Setup the encoder
-		vorbis_info_init(&vi);
-		
-		// Use quality-based VBR
-		if(VORBIS_MODE_QUALITY == _mode) {
-			result = vorbis_encode_init_vbr(&vi, [decoder pcmFormat].mChannelsPerFrame, [decoder pcmFormat].mSampleRate, _quality);
-			NSAssert(0 == result, NSLocalizedStringFromTable(@"Unable to initialize the Ogg Vorbis encoder.", @"Exceptions", @""));
-		}
-		else if(VORBIS_MODE_BITRATE == _mode) {
-			result = vorbis_encode_init(&vi, [decoder pcmFormat].mChannelsPerFrame, [decoder pcmFormat].mSampleRate, (_cbr ? _bitrate : -1), _bitrate, (_cbr ? _bitrate : -1));
-			NSAssert(0 == result, NSLocalizedStringFromTable(@"Unable to initialize the Ogg Vorbis encoder.", @"Exceptions", @""));
-		}
-		else
-			@throw [NSException exceptionWithName:@"NSInternalInconsistencyException" reason:@"Unrecognized vorbis mode" userInfo:nil];
-		
-		vorbis_comment_init(&vc);
-		
-		vorbis_analysis_init(&vd, &vi);
-		vorbis_block_init(&vd, &vb);
-		
-		// Use the current time as the stream id
-		result = ogg_stream_init(&os, (int)arc4random());
-		NSAssert(-1 != result, NSLocalizedStringFromTable(@"Unable to initialize the ogg stream.", @"Exceptions", @""));
-		
-		// Write stream headers	
-		vorbis_analysis_headerout(&vd, &vc, &header, &header_comm, &header_code);
-		ogg_stream_packetin(&os, &header);
-		ogg_stream_packetin(&os, &header_comm);
-		ogg_stream_packetin(&os, &header_code);
-		
-		for(;;) {
-			if(0 == ogg_stream_flush(&os, &og))
-				break;	
-			
-			numWritten = fwrite(og.header, sizeof(unsigned char), og.header_len, _out);
-			NSAssert(numWritten == og.header_len, NSLocalizedStringFromTable(@"Unable to write to the output file.", @"Exceptions", @""));
-			
-			numWritten = fwrite(og.body, sizeof(unsigned char), og.body_len, _out);
-			NSAssert(numWritten == og.body_len, NSLocalizedStringFromTable(@"Unable to write to the output file.", @"Exceptions", @""));
-		}
-		
+    if((_mode < OPUS_MODE_VBR) || (_mode > OPUS_MODE_HARD_CBR))
+      @throw [NSException exceptionWithName:@"NSInternalInconsistencyException" reason:@"Unrecognized opus mode" userInfo:nil];
+
+    ope_encoder_ctl(enc, OPUS_SET_VBR((_mode == OPUS_MODE_HARD_CBR) ? 0 : 1));
+    ope_encoder_ctl(enc, OPUS_SET_VBR_CONSTRAINT(_mode == OPUS_MODE_VBR) ? 0 : 1);
+    ope_encoder_ctl(enc, OPUS_SET_COMPLEXITY(_complexity));
+    ope_encoder_ctl(enc, OPUS_SET_BITRATE(_bitrate));
+
 		// Iteratively get the PCM data and encode it
 		while(NO == eos) {
 			
 			// Set up the buffer parameters
 			bufferList.mBuffers[0].mNumberChannels	= [decoder pcmFormat].mChannelsPerFrame;
 			bufferList.mBuffers[0].mDataByteSize	= bufferByteSize;
-			frameCount								= bufferList.mBuffers[0].mDataByteSize / [decoder pcmFormat].mBytesPerFrame;
-			
+			frameCount = bufferList.mBuffers[0].mDataByteSize / [decoder pcmFormat].mBytesPerFrame;
+
 			// Read a chunk of PCM input
 			frameCount = [decoder readAudio:&bufferList frameCount:frameCount];
-			
-			// Expose the buffer to submit data
-			buffer = vorbis_analysis_buffer(&vd, frameCount);
-			
-			// Split PCM data into channels and convert to 32-bit float samples for Vorbis
+
 			switch([decoder pcmFormat].mBitsPerChannel) {
 				
 				case 8:
 					buffer8 = bufferList.mBuffers[0].mData;
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample)
-							buffer[channel][wideSample] = buffer8[sample] / 128.f;
+							buffer[sample] = ((opus_int16) buffer8[sample]) << 8;
 					}
 					break;
 					
 				case 16:
 					buffer16 = bufferList.mBuffers[0].mData;
-					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
-						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample)
-							buffer[channel][wideSample] = ((int16_t)OSSwapBigToHostInt16(buffer16[sample])) / 32768.f;
-					}
+          for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
+            for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
+              buffer[sample] = (opus_int16) OSSwapBigToHostInt16(buffer16[sample]);
+            }
+          }
 					break;
 					
 				case 24:
@@ -231,10 +193,9 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
 							constructedSample = (int8_t)*buffer8++; constructedSample <<= 8;
-							constructedSample |= (uint8_t)*buffer8++; constructedSample <<= 8;
 							constructedSample |= (uint8_t)*buffer8++;
-							
-							buffer[channel][wideSample] = (constructedSample / 8388608.);
+
+							buffer[sample] = constructedSample;
 						}
 					}
 					break;
@@ -243,7 +204,7 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 					buffer32 = bufferList.mBuffers[0].mData;
 					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
 						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample)
-							buffer[channel][wideSample] = ((int32_t)OSSwapBigToHostInt32(buffer32[sample])) / 2147483648.f;
+							buffer[sample] = (opus_int16) (buffer32[sample] / 65536);
 					}
 					break;
 					
@@ -252,9 +213,9 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 					break;
 			}
 			
-			// Tell the library how much data we actually submitted
-			vorbis_analysis_wrote(&vd, frameCount);
-			
+			// Write the data
+      ope_encoder_write(enc, buffer, frameCount);
+
 			// Update status
 			framesToRead -= frameCount;
 			
@@ -274,33 +235,7 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 			}
 			
 			++iterations;
-			
-			while(1 == vorbis_analysis_blockout(&vd, &vb)){
-				
-				vorbis_analysis(&vb, NULL);
-				vorbis_bitrate_addblock(&vb);
-				
-				while(vorbis_bitrate_flushpacket(&vd, &op)) {
-					
-					ogg_stream_packetin(&os, &op);
-					
-					// Write out pages (if any)
-					while(NO == eos) {
-						
-						if(0 == ogg_stream_pageout(&os, &og))
-							break;
-						
-						numWritten = fwrite(og.header, sizeof(unsigned char), og.header_len, _out);
-						NSAssert(numWritten == og.header_len, NSLocalizedStringFromTable(@"Unable to write to the output file.", @"Exceptions", @""));
-						
-						numWritten = fwrite(og.body, sizeof(unsigned char), og.body_len, _out);
-						NSAssert(numWritten == og.body_len, NSLocalizedStringFromTable(@"Unable to write to the output file.", @"Exceptions", @""));
-						
-						if(ogg_page_eos(&og))
-							eos = YES;
-					}
-				}
-			}
+      eos = (framesToRead == 0);
 		}
 	}
 
@@ -317,22 +252,20 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 		NSException *exception;
 		
 		// Close the output file
-		if(EOF == fclose(_out)) {
+		if(0 != ope_encoder_drain(enc)) {
 			exception = [NSException exceptionWithName:@"IOException"
 												reason:NSLocalizedStringFromTable(@"Unable to close the output file.", @"Exceptions", @"") 
 											  userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:errno], [NSString stringWithCString:strerror(errno) encoding:NSASCIIStringEncoding], nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
 			NSLog(@"%@", exception);
 		}
-		
-		// Clean up
-		ogg_stream_clear(&os);
-		vorbis_block_clear(&vb);
-		vorbis_dsp_clear(&vd);
-		vorbis_comment_clear(&vc);
-		vorbis_info_clear(&vi);
 
+    ope_encoder_destroy(enc);
+    ope_comments_destroy(comments);
+
+		// Clean up
 		free(bufferList.mBuffers[0].mData);
-	}	
+    free(buffer);
+	}
 
 	[[self delegate] setEndTime:[NSDate date]];
 	[[self delegate] setCompleted:YES];
@@ -341,15 +274,19 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 - (NSString *) settingsString
 {
 	switch(_mode) {
-		case VORBIS_MODE_QUALITY:
-			return [NSString stringWithFormat:@"Vorbis settings: VBR(q=%f)", _quality * 10.f];
+		case OPUS_MODE_VBR:
+			return [NSString stringWithFormat:@"Opus settings: VBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
 			break;
 			
-		case VORBIS_MODE_BITRATE:
-			return [NSString stringWithFormat:@"Vorbis settings: %@(%ld kbps)", (_cbr ? @"CBR" : @"VBR"), _bitrate / 1000];
+		case OPUS_MODE_CVBR:
+      return [NSString stringWithFormat:@"Opus settings: CVBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
 			break;
 			
-		default:
+    case OPUS_MODE_HARD_CBR:
+      return [NSString stringWithFormat:@"Opus settings: CBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
+      break;
+
+    default:
 			return nil;
 			break;
 	}
@@ -357,16 +294,15 @@ static int sVorbisBitrates [14] = { 48, 56, 64, 80, 96, 112, 128, 160, 192, 224,
 
 @end
 
-@implementation OggVorbisEncoder (Private)
+@implementation OggOpusEncoder (Private)
 
 - (void) parseSettings
 {
 	NSDictionary *settings	= [[self delegate] encoderSettings];
 	
-	_mode		= [[settings objectForKey:@"mode"] intValue];
-	_quality	= [[settings objectForKey:@"quality"] floatValue];
-	_bitrate	= sVorbisBitrates[[[settings objectForKey:@"bitrate"] intValue]] * 1000;
-	_cbr		= [[settings objectForKey:@"useConstantBitrate"] boolValue];
+	_mode		    = [[settings objectForKey:@"mode"] intValue];
+	_complexity	= [[settings objectForKey:@"complexity"] intValue];
+	_bitrate	  = sOpusBitrates[[[settings objectForKey:@"bitrate"] intValue]] * 1000;
 }
 
 @end

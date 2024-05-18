@@ -36,19 +36,22 @@
 #include <taglib/aifffile.h>					// TagLib::RIFF:AIFF::File
 #include <taglib/wavfile.h>						// TagLib::RIFF:WAVE::File
 
-#include <mp4v2/mp4v2.h>						// MP4FileHandle
+// Code commented out as mp4v2 is not included in AudioXCFrameworks
+// #include <mp4v2/mp4v2.h>						// MP4FileHandle
 
+#define PLATFORM_APPLE
 #include <mac/All.h>
 #include <mac/MACLib.h>
 #include <mac/APETag.h>
 #include <mac/CharacterHelper.h>
+#undef PLATFORM_APPLE
 
 #include <wavpack/wavpack.h>
 
 @interface AudioMetadata (FileMetadata)
 + (AudioMetadata *)		metadataFromFLACFile:(NSString *)filename;
 + (AudioMetadata *)		metadataFromMP3File:(NSString *)filename;
-+ (AudioMetadata *)		metadataFromMP4File:(NSString *)filename;
+// + (AudioMetadata *)		metadataFromMP4File:(NSString *)filename;
 + (AudioMetadata *)		metadataFromOggVorbisFile:(NSString *)filename;
 + (AudioMetadata *)		metadataFromOggFLACFile:(NSString *)filename;
 + (AudioMetadata *)		metadataFromOggSpeexFile:(NSString *)filename;
@@ -81,7 +84,7 @@
 	else if([extension isEqualToString:@"mp3"])
 		return [self metadataFromMP3File:filename];
 	else if([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"m4a"])
-		return [self metadataFromMP4File:filename];
+		return nil; // [self metadataFromMP4File:filename];
 	else if([extension isEqualToString:@"ogg"] || [extension isEqualToString:@"oga"]) {
 		
 		// Determine the content type of the ogg stream
@@ -699,6 +702,7 @@
 	return [result autorelease];
 }
 
+/*
 + (AudioMetadata *) metadataFromMP4File:(NSString *)filename
 {
 	AudioMetadata		*result			= [[AudioMetadata alloc] init];
@@ -783,7 +787,7 @@
 	}
 	
 	return [result autorelease];
-}
+} */
 
 + (AudioMetadata *)	metadataFromOggVorbisFile:(NSString *)filename
 {
@@ -1821,12 +1825,12 @@
 			[result setLength:[NSNumber numberWithInt:f.audioProperties()->lengthInSeconds()]];
 		
 		// Extract composer if present
-		TagLib::ID3v2::FrameList frameList = f.tag()->frameListMap()["TCOM"];
+		TagLib::ID3v2::FrameList frameList = f.ID3v2Tag()->frameListMap()["TCOM"];
 		if(NO == frameList.isEmpty())
 			[result setAlbumComposer:[NSString stringWithUTF8String:frameList.front()->toString().toCString(true)]];
 		
 		// Extract total tracks if present
-		frameList = f.tag()->frameListMap()["TRCK"];
+		frameList = f.ID3v2Tag()->frameListMap()["TRCK"];
 		if(NO == frameList.isEmpty()) {
 			// Split the tracks at '/'
 			trackString		= [NSString stringWithUTF8String:frameList.front()->toString().toCString(true)];
@@ -1844,14 +1848,14 @@
 		}
 		
 		// Extract track length if present
-		frameList = f.tag()->frameListMap()["TLEN"];
+		frameList = f.ID3v2Tag()->frameListMap()["TLEN"];
 		if(NO == frameList.isEmpty()) {
 			NSString *value = [NSString stringWithUTF8String:frameList.front()->toString().toCString(true)];
 			[result setLength:[NSNumber numberWithInt:([value intValue] / 1000)]];
 		}			
 		
 		// Extract disc number and total discs
-		frameList = f.tag()->frameListMap()["TPOS"];
+		frameList = f.ID3v2Tag()->frameListMap()["TPOS"];
 		if(NO == frameList.isEmpty()) {
 			// Split the tracks at '/'
 			discString		= [NSString stringWithUTF8String:frameList.front()->toString().toCString(true)];
@@ -1869,7 +1873,7 @@
 		}
 		
 		// Extract album art if present
-		frameList = f.tag()->frameListMap()["APIC"];
+		frameList = f.ID3v2Tag()->frameListMap()["APIC"];
 		if(NO == frameList.isEmpty() && NULL != (picture = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front()))) {
 			TagLib::ByteVector bv = picture->picture();
 			[result setAlbumArt:[[[NSImage alloc] initWithData:[NSData dataWithBytes:bv.data() length:bv.size()]] autorelease]];
@@ -1877,14 +1881,14 @@
 		
 		// Extract compilation if present (iTunes TCMP tag)
 		if([[NSUserDefaults standardUserDefaults] boolForKey:@"useiTunesWorkarounds"]) {
-			frameList = f.tag()->frameListMap()["TCMP"];
+			frameList = f.ID3v2Tag()->frameListMap()["TCMP"];
 			// It seems that the presence of this frame indicates a compilation
 			if(NO == frameList.isEmpty())
 				[result setCompilation:[NSNumber numberWithBool:YES]];
 		}
 		
 		// Extract ISRC if present
-		frameList = f.tag()->frameListMap()["TSRC"];
+		frameList = f.ID3v2Tag()->frameListMap()["TSRC"];
 		if(NO == frameList.isEmpty()) {
 			NSString *value = [NSString stringWithUTF8String:frameList.front()->toString().toCString(true)];
 			[result setISRC:value];
@@ -1892,7 +1896,7 @@
 		
 		
 		// MusicBrainz artist and album identifiers
-		frameList = f.tag()->frameList("TXXX");
+		frameList = f.ID3v2Tag()->frameList("TXXX");
 		for(TagLib::ID3v2::FrameList::Iterator it = frameList.begin(); it != frameList.end(); ++it)
 		{
 			TagLib::ID3v2::UserTextIdentificationFrame *frame = (TagLib::ID3v2::UserTextIdentificationFrame *)(*it);
@@ -1910,7 +1914,7 @@
 		}
 		
 		// Unique file identifier (MusicBrainz track ID)
-		frameList = f.tag()->frameList("UFID");
+		frameList = f.ID3v2Tag()->frameList("UFID");
 		for(TagLib::ID3v2::FrameList::Iterator it = frameList.begin(); it != frameList.end(); ++it)
 		{
 			TagLib::ID3v2::UniqueFileIdentifierFrame *frame = (TagLib::ID3v2::UniqueFileIdentifierFrame *)(*it);
@@ -1942,6 +1946,14 @@
 	
 	customTag = [[NSUserDefaults standardUserDefaults] stringForKey:[NSString stringWithFormat:@"OggVorbisTag_%@", tag]];
 	return (nil == customTag ? TagLib::String([tag UTF8String], TagLib::String::UTF8) : TagLib::String([customTag UTF8String], TagLib::String::UTF8));
+}
+
++ (TagLib::String) customizeOpusTag:(NSString *)tag
+{
+  NSString *customTag;
+
+  customTag = [[NSUserDefaults standardUserDefaults] stringForKey:[NSString stringWithFormat:@"OpusTag_%@", tag]];
+  return (nil == customTag ? TagLib::String([tag UTF8String], TagLib::String::UTF8) : TagLib::String([customTag UTF8String], TagLib::String::UTF8));
 }
 
 + (TagLib::String) customizeOggFLACTag:(NSString *)tag

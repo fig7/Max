@@ -125,7 +125,7 @@
 	NSArray			*newBitrates;
 	
 	selectedValue	= [NSNumber numberWithInt:[[_bitratePopUpButton titleOfSelectedItem] intValue]];
-	keyPath			= (NSOnState == [sender state] ? @"selection.bitratesVBR" : @"selection.bitrates");
+	keyPath			= (NSControlStateValueOn == [sender state] ? @"selection.bitratesVBR" : @"selection.bitrates");
 
 	[_bitratePopUpButton unbind:@"content"];
 		

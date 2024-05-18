@@ -20,11 +20,12 @@
 
 #import "RipperTask.h"
 
-// Tag values for NSPopupButton
+// Tag values for the rippers
+// Code commented out as Paranoia is not included in AudioXCFrameworks
 enum {
 	kBasicRipper			= 0,
 	kComparisonRipper		= 1,
-	kParanoiaRipper			= 2
+//	kParanoiaRipper			= 2
 //	kSecureRipper			= 3
 };
 

@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/* Code commented out as Paranoia is not included in AudioXCFrameworks
 #import "ParanoiaRipperTask.h"
 #import "ParanoiaRipper.h"
 
@@ -33,3 +34,4 @@
 }
 
 @end
+*/

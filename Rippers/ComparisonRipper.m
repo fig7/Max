@@ -65,7 +65,7 @@
 		[alert addButtonWithTitle:NSLocalizedStringFromTable(@"OK", @"General", @"")];
 		[alert setMessageText:[NSString stringWithFormat:NSLocalizedStringFromTable(@"An error occurred while initializing the %@ class.", @"Exceptions", @""), @"ComparisonRipper"]];
 		[alert setInformativeText:[exception reason]];
-		[alert setAlertStyle:NSWarningAlertStyle];		
+		[alert setAlertStyle:NSAlertStyleWarning];		
 		[alert runModal];
 	}
 }
@@ -151,11 +151,11 @@
 		outputASBD.mBitsPerChannel		= 16;
 		
 		err = AudioFileCreateWithURL((CFURLRef)[NSURL fileURLWithPath:filename], kAudioFileCAFType, &outputASBD, kAudioFileFlags_EraseFile, &audioFile);
-		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileInitialize", UTCreateStringForOSType(err));
-		
+		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"AudioFileInitialize", GetOSStatusError(err));
+
 		err = ExtAudioFileWrapAudioFileID(audioFile, YES, &extAudioFileRef);
-		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileWrapAudioFileID", UTCreateStringForOSType(err));
-		
+		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileWrapAudioFileID", GetOSStatusError(err));
+
 		// Save the drive speed
 		driveSpeed = [_drive speed];
 		
@@ -186,7 +186,7 @@
 		if(noErr != err) {
 			exception = [NSException exceptionWithName:@"CoreAudioException"
 												reason:[NSString stringWithFormat:NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileDispose"]
-											  userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSString stringWithCString:GetMacOSStatusErrorString(err) encoding:NSASCIIStringEncoding], [NSString stringWithCString:GetMacOSStatusCommentString(err) encoding:NSASCIIStringEncoding], nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
+											  userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@(err).stringValue, GetOSStatusError(err), nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
 			NSLog(@"%@", exception);
 		}
 		
@@ -195,7 +195,7 @@
 		if(noErr != err) {
 			exception = [NSException exceptionWithName:@"CoreAudioException"
 												 reason:[NSString stringWithFormat:NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioFileClose"]
-											  userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSString stringWithCString:GetMacOSStatusErrorString(err) encoding:NSASCIIStringEncoding], [NSString stringWithCString:GetMacOSStatusCommentString(err) encoding:NSASCIIStringEncoding], nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
+											  userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@(err).stringValue, GetOSStatusError(err), nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
 			NSLog(@"%@", exception);
 		}
 
@@ -711,8 +711,8 @@
 			
 			// Write the data
 			err = ExtAudioFileWrite(file, frameCount, &bufferList);
-			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileWrite", UTCreateStringForOSType(err));
-			
+			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileWrite", GetOSStatusError(err));
+
 			// Housekeeping
 			sectorsRemaining -= [readRange length];
 

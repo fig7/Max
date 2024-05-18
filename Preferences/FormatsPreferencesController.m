@@ -32,12 +32,9 @@
 #import "OggVorbisSettingsSheet.h"
 #import "MP3SettingsSheet.h"
 #import "OggSpeexSettingsSheet.h"
+#import "OpusSettingsSheet.h"
 
 #include <sndfile/sndfile.h>
-
-@interface FormatsPreferencesController (Private)
-- (void)	didEndSettingsSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-@end
 
 @implementation FormatsPreferencesController
 
@@ -95,6 +92,8 @@
 		[_availableFormats addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:NSLocalizedStringFromTable(@"MP3", @"General", @""), NSLocalizedStringFromTable(@"Built-In", @"General", @""), [NSNumber numberWithInt:kComponentMP3], nil] forKeys:[NSArray arrayWithObjects:@"name", @"source", @"component", nil]]];
 		[_availableFormats addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:NSLocalizedStringFromTable(@"Speex", @"General", @""), NSLocalizedStringFromTable(@"Built-In", @"General", @""), [NSNumber numberWithInt:kComponentOggSpeex], nil] forKeys:[NSArray arrayWithObjects:@"name", @"source", @"component", nil]]];
 		
+		[_availableFormats addObject:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:NSLocalizedStringFromTable(@"Opus", @"General", @""), NSLocalizedStringFromTable(@"Built-In", @"General", @""), [NSNumber numberWithInt:kComponentOpus], nil] forKeys:[NSArray arrayWithObjects:@"name", @"source", @"component", nil]]];
+
 		// Add CoreAudio formats
 		for(j = 0; j < [coreAudioFormats count]; ++j) {
 			formatDictionary = [coreAudioFormats objectAtIndex:j];
@@ -221,6 +220,8 @@
 			case kComponentMP3:				defaultSettings = [MP3SettingsSheet defaultSettings];				break;
 			case kComponentOggSpeex:		defaultSettings = [OggSpeexSettingsSheet defaultSettings];			break;
 
+			case kComponentOpus:			defaultSettings = [OpusSettingsSheet defaultSettings];				break;
+
 			default:						defaultSettings = [NSDictionary dictionary];						break;
 		}
 		
@@ -269,7 +270,8 @@
 		case kComponentOggVorbis:		settingsSheetClass = [OggVorbisSettingsSheet class];		break;
 		case kComponentMP3:				settingsSheetClass = [MP3SettingsSheet class];				break;
 		case kComponentOggSpeex:		settingsSheetClass = [OggSpeexSettingsSheet class];			break;
-			
+		case kComponentOpus:			settingsSheetClass = [OpusSettingsSheet class];				break;
+
 		default:
 			NSLog(@"Unknown component %@", [format objectForKey:@"component"]);
 			break;
@@ -278,19 +280,14 @@
 	settingsSheet = [[[settingsSheetClass alloc] initWithSettings:settings] autorelease];
 	[settingsSheet setSearchKey:format];
 
-	[[NSApplication sharedApplication] beginSheet:[settingsSheet sheet] modalForWindow:[[PreferencesController sharedPreferences] window] modalDelegate:self didEndSelector:@selector(didEndSettingsSheet:returnCode:contextInfo:) contextInfo:settingsSheet];
-}		
+	NSWindow* window = [[PreferencesController sharedPreferences] window];
+	NSWindow* sheet  = [settingsSheet sheet];
+	[window beginSheet: sheet completionHandler:^(NSModalResponse returnCode) {
+		[sheet orderOut:self];
+	}];
+}
 
 - (NSUInteger)		countOfAvailableFormats							{ return [_availableFormats count]; }
 - (NSDictionary *)	objectInAvailableFormatsAtIndex:(unsigned)idx	{ return [_availableFormats objectAtIndex:idx]; }
-
-@end
-
-@implementation FormatsPreferencesController (Private)
-
-- (void) didEndSettingsSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
-{
-	[sheet orderOut:self];
-}
 
 @end

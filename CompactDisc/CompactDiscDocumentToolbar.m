@@ -154,8 +154,7 @@ static NSString		*EjectDiscToolbarItemIdentifier				= @"org.sbooth.Max.CompactDi
 		SelectPreviousTrackToolbarItemIdentifier, SelectNextTrackToolbarItemIdentifier,
 		QueryMusicBrainzToolbarItemIdentifier,
 		EjectDiscToolbarItemIdentifier, 
-		NSToolbarSeparatorItemIdentifier,  NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier,
-		NSToolbarCustomizeToolbarItemIdentifier, nil];
+		NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier, nil];
 }
 
 @end

@@ -16,6 +16,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import <UniformTypeIdentifiers/UTCoreTypes.h>
+
 #import "FilesTableView.h"
 
 @implementation FilesTableView
@@ -103,10 +105,10 @@
 {
 	NSOpenPanel		*panel		= [NSOpenPanel openPanel];
 
-	[panel setAllowedFileTypes:@[@"app"]];
-	
+	[panel setAllowedContentTypes:@[UTTypeApplication]];
+
 	[panel beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse result) {
-		if(NSOKButton == result) {
+    if(NSModalResponseOK == result) {
 			NSString			*path				= [[_filesController selection] valueForKey:@"filename"];
 
 			for(NSURL *url in [panel URLs]) {

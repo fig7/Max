@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,18 +14,18 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="222" y="378" width="520" height="501"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1792" height="1097"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <value key="minSize" type="size" width="473" height="5"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="520" height="501"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="310">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="310">
                         <rect key="frame" x="41" y="300" width="22" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSRemoveTemplate" imagePosition="above" alignment="center" borderStyle="border" inset="2" id="419">
@@ -37,7 +37,7 @@
                             <binding destination="324" name="enabled" keyPath="selectedObjects.@count" id="335"/>
                         </connections>
                     </button>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="309">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="309">
                         <rect key="frame" x="18" y="300" width="23" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAddTemplate" imagePosition="above" alignment="center" borderStyle="border" inset="2" id="418">
@@ -49,7 +49,7 @@
                             <binding destination="316" name="enabled" keyPath="selectedObjects.@count" id="323"/>
                         </connections>
                     </button>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="308">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="308">
                         <rect key="frame" x="385" y="299" width="115" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="smallSquare" title="Encoder Settings" bezelStyle="smallSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="417">
@@ -73,20 +73,19 @@
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="18" horizontalPageScroll="10" verticalLineScroll="18" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="350">
                         <rect key="frame" x="20" y="328" width="480" height="131"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <clipView key="contentView" ambiguous="YES" id="yDx-je-J9i">
-                            <rect key="frame" x="1" y="0.0" width="478" height="130"/>
+                        <clipView key="contentView" id="yDx-je-J9i">
+                            <rect key="frame" x="1" y="1" width="478" height="129"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="16" headerView="429" id="351">
-                                    <rect key="frame" x="0.0" y="0.0" width="478" height="105"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="478" height="104"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="selected" editable="NO" width="27" minWidth="10" maxWidth="3.4028234663852886e+38" id="411">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="✔">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -105,7 +104,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="format" editable="NO" width="218" minWidth="40" maxWidth="1000" id="353">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Format">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -123,9 +121,8 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="nickname" width="223.6689453125" minWidth="4" maxWidth="1000" id="354">
+                                        <tableColumn identifier="nickname" width="215" minWidth="4" maxWidth="1000" id="354">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Nickname">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -158,7 +155,7 @@
                             <rect key="frame" x="464" y="17" width="15" height="98"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" id="429">
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="429">
                             <rect key="frame" x="0.0" y="0.0" width="478" height="25"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
@@ -175,20 +172,19 @@
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="361">
                         <rect key="frame" x="20" y="20" width="480" height="218"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <clipView key="contentView" ambiguous="YES" id="QYU-vs-k4m">
-                            <rect key="frame" x="1" y="0.0" width="478" height="217"/>
+                        <clipView key="contentView" id="QYU-vs-k4m">
+                            <rect key="frame" x="1" y="1" width="478" height="216"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" autosaveColumns="NO" rowHeight="14" headerView="432" id="362">
-                                    <rect key="frame" x="0.0" y="0.0" width="478" height="192"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="478" height="191"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="name" editable="NO" width="245" minWidth="40" maxWidth="1000" id="363">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Format">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -206,9 +202,8 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="source" editable="NO" width="226.771484375" minWidth="43.771484375" maxWidth="1000" id="364">
+                                        <tableColumn identifier="source" editable="NO" width="218" minWidth="43.771484375" maxWidth="1000" id="364">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Source">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -245,7 +240,7 @@
                             <rect key="frame" x="-30" y="17" width="15" height="185"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" id="432">
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="432">
                             <rect key="frame" x="0.0" y="0.0" width="478" height="25"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
@@ -301,7 +296,7 @@
         </arrayController>
     </objects>
     <resources>
-        <image name="NSAddTemplate" width="11" height="11"/>
-        <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="NSAddTemplate" width="18" height="16"/>
+        <image name="NSRemoveTemplate" width="18" height="4"/>
     </resources>
 </document>

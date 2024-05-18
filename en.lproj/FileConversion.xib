@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,7 +20,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="72" y="408" width="640" height="383"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1792" height="1097"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="383"/>
@@ -29,20 +29,19 @@
                     <scrollView toolTip="Drag files or folders here" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                         <rect key="frame" x="20" y="44" width="600" height="294"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <clipView key="contentView" ambiguous="YES" id="7Kx-f3-hID">
-                            <rect key="frame" x="1" y="0.0" width="598" height="293"/>
+                        <clipView key="contentView" id="7Kx-f3-hID">
+                            <rect key="frame" x="1" y="1" width="598" height="277"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" autosaveName="conversionFilesTable" headerView="681" id="8" customClass="FilesTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="598" height="268"/>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" autosaveName="conversionFilesTable" headerView="681" id="8" customClass="FilesTableView">
+                                    <rect key="frame" x="0.0" y="0.0" width="608" height="252"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="filename" editable="NO" width="167.6845703125" minWidth="40" maxWidth="1000" id="9">
+                                        <tableColumn identifier="filename" editable="NO" width="168" minWidth="40" maxWidth="1000" id="9">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Filename">
-                                                <font key="font" metaFont="controlContent" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -58,7 +57,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="trackTitle" width="119" minWidth="10" maxWidth="1000" id="254">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Title">
-                                                <font key="font" metaFont="controlContent" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -74,7 +72,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="albumArtist" width="123" minWidth="10" maxWidth="1000" id="255">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Artist">
-                                                <font key="font" metaFont="controlContent" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -88,9 +85,8 @@
                                                 <binding destination="45" name="value" keyPath="arrangedObjects.metadata.albumArtist" id="259"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="albumTitle" width="176.5" minWidth="38.78857421875" maxWidth="1000" id="256">
+                                        <tableColumn identifier="albumTitle" width="177" minWidth="38.78857421875" maxWidth="1000" id="256">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Album">
-                                                <font key="font" metaFont="controlContent" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -114,16 +110,16 @@
                                 </tableView>
                             </subviews>
                         </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="680">
-                            <rect key="frame" x="1" y="-30" width="583" height="15"/>
+                        <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="680">
+                            <rect key="frame" x="1" y="278" width="598" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="679">
                             <rect key="frame" x="-30" y="17" width="15" height="183"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" id="681">
-                            <rect key="frame" x="0.0" y="0.0" width="598" height="25"/>
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="681">
+                            <rect key="frame" x="0.0" y="0.0" width="608" height="25"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
@@ -136,7 +132,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="32">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="32">
                         <rect key="frame" x="41" y="16" width="22" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSRemoveTemplate" imagePosition="above" alignment="center" borderStyle="border" inset="2" id="641">
@@ -148,7 +144,7 @@
                             <binding destination="45" name="enabled" keyPath="selectedObjects.@count" id="55"/>
                         </connections>
                     </button>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
                         <rect key="frame" x="18" y="16" width="23" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAddTemplate" imagePosition="above" alignment="center" borderStyle="border" inset="2" id="642">
@@ -288,7 +284,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="181" y="118" width="675" height="415"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1792" height="1097"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <view key="contentView" id="SpQ-Ba-Zi0">
                 <rect key="frame" x="0.0" y="0.0" width="675" height="415"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -614,7 +610,7 @@
                             <binding destination="45" name="value" keyPath="selection.metadata.albumComment" id="6tD-C4-dOI"/>
                         </connections>
                     </textField>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ghu-TU-Zar">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ghu-TU-Zar">
                         <rect key="frame" x="432" y="164" width="154" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Part of a compilation" bezelStyle="regularSquare" imagePosition="left" alignment="left" allowsMixedState="YES" inset="2" id="nQN-tW-vyJ">
@@ -631,7 +627,7 @@
         </window>
     </objects>
     <resources>
-        <image name="NSAddTemplate" width="11" height="11"/>
-        <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="NSAddTemplate" width="18" height="16"/>
+        <image name="NSRemoveTemplate" width="18" height="4"/>
     </resources>
 </document>
