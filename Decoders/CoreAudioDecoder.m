@@ -18,6 +18,7 @@
 
 #import "CoreAudioDecoder.h"
 #import "CircularBuffer.h"
+#import "UtilityFunctions.h"
 
 #include <AudioToolbox/AudioFormat.h>
 
@@ -27,13 +28,13 @@
 {
 	if((self = [super initWithFilename:filename])) {
 		OSStatus result = ExtAudioFileOpenURL((CFURLRef)[NSURL fileURLWithPath:filename], &_extAudioFile);
-		NSAssert1(noErr == result, @"ExtAudioFileOpenURL failed: %@", UTCreateStringForOSType(result));
-		
+		NSAssert1(noErr == result, @"ExtAudioFileOpenURL failed: %@", GetOSStatusError(result));
+
 		// Query file type
 		UInt32 dataSize = sizeof(AudioStreamBasicDescription);
 		result = ExtAudioFileGetProperty(_extAudioFile, kExtAudioFileProperty_FileDataFormat, &dataSize, &_sourceFormat);
-		NSAssert1(noErr == result, @"AudioFileGetProperty failed: %@", UTCreateStringForOSType(result));
-		
+		NSAssert1(noErr == result, @"AudioFileGetProperty failed: %@", GetOSStatusError(result));
+
 		// Setup input format descriptor
 		_pcmFormat						= _sourceFormat;
 		
@@ -72,8 +73,8 @@
 		
 		// Tell the extAudioFile the format we'd like for data
 		result			= ExtAudioFileSetProperty(_extAudioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(_pcmFormat), &_pcmFormat);
-		NSAssert1(noErr == result, @"ExtAudioFileSetProperty failed: %@", UTCreateStringForOSType(result));
-		
+		NSAssert1(noErr == result, @"ExtAudioFileSetProperty failed: %@", GetOSStatusError(result));
+
 	}
 	return self;
 }
@@ -81,8 +82,8 @@
 - (void) dealloc
 {
 	OSStatus result = ExtAudioFileDispose(_extAudioFile);
-	NSAssert1(noErr == result, @"ExtAudioFileDispose failed: %@", UTCreateStringForOSType(result));
-	
+	NSAssert1(noErr == result, @"ExtAudioFileDispose failed: %@", GetOSStatusError(result));
+
 	[super dealloc];
 }
 
@@ -96,8 +97,8 @@
 	asbd			= _sourceFormat;
 	specifierSize	= sizeof(fileFormat);
 	result			= AudioFormatGetProperty(kAudioFormatProperty_FormatName, sizeof(AudioStreamBasicDescription), &asbd, &specifierSize, &fileFormat);
-	NSAssert1(noErr == result, @"AudioFormatGetProperty failed: %@", UTCreateStringForOSType(result));
-	
+	NSAssert1(noErr == result, @"AudioFormatGetProperty failed: %@", GetOSStatusError(result));
+
 	return [fileFormat autorelease];
 }
 
@@ -109,7 +110,7 @@
 	
 	dataSize		= sizeof(frameCount);
 	result			= ExtAudioFileGetProperty(_extAudioFile, kExtAudioFileProperty_FileLengthFrames, &dataSize, &frameCount);
-	NSAssert1(noErr == result, @"ExtAudioFileGetProperty(kExtAudioFileProperty_FileLengthFrames) failed: %@", UTCreateStringForOSType(result));
+	NSAssert1(noErr == result, @"ExtAudioFileGetProperty(kExtAudioFileProperty_FileLengthFrames) failed: %@", GetOSStatusError(result));
 
 	return frameCount;
 }
@@ -156,7 +157,7 @@
 
 	frameCount								= bufferList.mBuffers[0].mDataByteSize / [self pcmFormat].mBytesPerFrame;
 	result									= ExtAudioFileRead(_extAudioFile, &frameCount, &bufferList);
-	NSAssert1(noErr == result, @"ExtAudioFileRead failed: %@", UTCreateStringForOSType(result));
+	NSAssert1(noErr == result, @"ExtAudioFileRead failed: %@", GetOSStatusError(result));
 
 	NSAssert(frameCount * [self pcmFormat].mBytesPerFrame == bufferList.mBuffers[0].mDataByteSize, @"mismatch");
 	

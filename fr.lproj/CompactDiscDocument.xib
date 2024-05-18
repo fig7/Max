@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -22,7 +22,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="36" y="151" width="434" height="518"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1792" height="1097"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <value key="minSize" type="size" width="434" height="518"/>
             <view key="contentView" id="26">
                 <rect key="frame" x="0.0" y="0.0" width="434" height="518"/>
@@ -141,12 +141,12 @@
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="32">
                         <rect key="frame" x="20" y="20" width="394" height="210"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
-                        <clipView key="contentView" ambiguous="YES" id="uKZ-ry-pYY">
-                            <rect key="frame" x="1" y="0.0" width="392" height="209"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" id="uKZ-ry-pYY">
+                            <rect key="frame" x="1" y="1" width="392" height="208"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="992" id="33">
-                                    <rect key="frame" x="0.0" y="0.0" width="392" height="184"/>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="992" id="33">
+                                    <rect key="frame" x="0.0" y="0.0" width="392" height="183"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -154,7 +154,6 @@
                                     <tableColumns>
                                         <tableColumn identifier="selected" editable="NO" width="27" minWidth="27" maxWidth="1000" id="35">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="✔">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -195,7 +194,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="number" editable="NO" width="51" minWidth="51" maxWidth="1000" id="36">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Piste">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -215,7 +213,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="title" width="228" minWidth="100" maxWidth="1000" id="34">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Titre">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -233,9 +230,8 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="length" editable="NO" width="73.82373046875" minWidth="39.82373046875" maxWidth="1000" id="304">
+                                        <tableColumn identifier="length" editable="NO" width="65" minWidth="39.82373046875" maxWidth="1000" id="304">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Durée">
-                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -272,7 +268,7 @@
                             <outlet property="nextKeyView" destination="41" id="628"/>
                         </connections>
                     </scrollView>
-                    <button fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="279">
+                    <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="279">
                         <rect key="frame" x="254" y="269" width="99" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Compilation" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="943">
@@ -337,7 +333,7 @@
                             <outlet property="nextKeyView" destination="32" id="629"/>
                         </connections>
                     </textField>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="441">
+                    <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="441">
                         <rect key="frame" x="19" y="236" width="64" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Tout" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="948">
@@ -349,7 +345,7 @@
                             <binding destination="-2" name="enabled" keyPath="discInDrive" id="808"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="443">
+                    <button imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="443">
                         <rect key="frame" x="339" y="236" width="76" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Aucun" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="949">
@@ -433,6 +429,7 @@
             <point key="canvasLocation" x="139" y="147"/>
         </window>
         <arrayController objectClassName="NSString" editable="NO" id="84" userLabel="GenreController">
+            <classReference key="objectClass" className="NSString"/>
             <connections>
                 <binding destination="-2" name="contentArray" keyPath="genres" id="577"/>
             </connections>
@@ -463,6 +460,7 @@
                 <string>byteSize</string>
                 <string>date</string>
             </declaredKeys>
+            <classReference key="objectClass" className="Track"/>
             <connections>
                 <binding destination="-2" name="contentArray" keyPath="tracks" id="570"/>
             </connections>
@@ -471,7 +469,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="181" y="118" width="550" height="485"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1792" height="1097"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <view key="contentView" id="mUQ-XY-cb4">
                 <rect key="frame" x="0.0" y="0.0" width="550" height="485"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -667,11 +665,11 @@
                             <outlet property="nextKeyView" destination="224" id="630"/>
                         </connections>
                     </textField>
-                    <box fixedFrame="YES" boxType="secondary" borderType="bezel" title="Propriétés" translatesAutoresizingMaskIntoConstraints="NO" id="296">
+                    <box fixedFrame="YES" borderType="bezel" title="Propriétés" translatesAutoresizingMaskIntoConstraints="NO" id="296">
                         <rect key="frame" x="155" y="16" width="300" height="203"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                         <view key="contentView" id="jI3-3V-KiG">
-                            <rect key="frame" x="3" y="3" width="294" height="185"/>
+                            <rect key="frame" x="4" y="5" width="292" height="183"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="114" translatesAutoresizingMaskIntoConstraints="NO" id="346">

@@ -154,7 +154,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="ICC-Vd-Pas">
                             <rect key="frame" x="1" y="1" width="392" height="208"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="1075" id="33">
                                     <rect key="frame" x="0.0" y="0.0" width="392" height="183"/>
@@ -682,7 +682,7 @@
                             <outlet property="nextKeyView" destination="224" id="630"/>
                         </connections>
                     </textField>
-                    <box fixedFrame="YES" boxType="secondary" borderType="bezel" title="Properties" translatesAutoresizingMaskIntoConstraints="NO" id="296">
+                    <box fixedFrame="YES" borderType="bezel" title="Properties" translatesAutoresizingMaskIntoConstraints="NO" id="296">
                         <rect key="frame" x="125" y="16" width="300" height="203"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <view key="contentView" id="uM2-cW-qLt">

@@ -122,7 +122,7 @@
 	asbd			= _pcmFormat;
 	specifierSize	= sizeof(fileFormat);
 	result			= AudioFormatGetProperty(kAudioFormatProperty_FormatName, sizeof(AudioStreamBasicDescription), &asbd, &specifierSize, &fileFormat);
-	NSAssert1(noErr == result, @"AudioFormatGetProperty failed: %@", UTCreateStringForOSType(result));
+	NSAssert1(noErr == result, @"AudioFormatGetProperty failed: %@", GetOSStatusError(result));
 	
 	return [fileFormat autorelease];
 }

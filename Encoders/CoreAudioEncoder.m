@@ -32,6 +32,7 @@
 #import "RegionDecoder.h"
 
 #import "GaplessUtilities.h"
+#import "UtilityFunctions.h"
 
 @interface CoreAudioEncoder (Private)
 
@@ -117,48 +118,48 @@
 		NSAssert(nil != url, NSLocalizedStringFromTable(@"Unable to locate the output file.", @"Exceptions", @""));
 
 		err = ExtAudioFileCreateWithURL((CFURLRef)url, [self fileType], &asbd, NULL, kAudioFileFlags_EraseFile, &extAudioFile);
-		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileCreateWithURL", UTCreateStringForOSType(err));
+		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileCreateWithURL", GetOSStatusError(err));
 
 		asbd = [decoder pcmFormat];
 		err = ExtAudioFileSetProperty(extAudioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(asbd), &asbd);
-		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileSetProperty", UTCreateStringForOSType(err));
-		
+		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileSetProperty", GetOSStatusError(err));
+
 		// Tweak converter settings
 		size	= sizeof(converter);
 		err		= ExtAudioFileGetProperty(extAudioFile, kExtAudioFileProperty_AudioConverter, &size, &converter);
-		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileGetProperty", UTCreateStringForOSType(err));
-		
+		NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileGetProperty", GetOSStatusError(err));
+
 		// Only adjust settings if a converter exists
 		if(NULL != converter) {
 			// Bitrate
 			if(nil != [settings objectForKey:@"bitrate"]) {
 				bitrate		= [[settings objectForKey:@"bitrate"] intValue] * 1000;
 				err			= AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, sizeof(bitrate), &bitrate);
-				NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioConverterSetProperty", UTCreateStringForOSType(err));
+				NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"AudioConverterSetProperty", GetOSStatusError(err));
 			}
 			
 			// Quality
 			if(nil != [settings objectForKey:@"quality"]) {
 				quality		= [[settings objectForKey:@"quality"] intValue];
 				err			= AudioConverterSetProperty(converter, kAudioConverterCodecQuality, sizeof(quality), &quality);
-				NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioConverterSetProperty", UTCreateStringForOSType(err));
+				NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"AudioConverterSetProperty", GetOSStatusError(err));
 			}
 			
 			// Bitrate mode (this is a semi-hack)
 			if(nil != [settings objectForKey:@"vbrAvailable"]) {
 				mode		= [[settings objectForKey:@"useVBR"] boolValue] ? kAudioCodecBitRateFormat_VBR : kAudioCodecBitRateFormat_CBR;
 				err			= AudioConverterSetProperty(converter, kAudioCodecBitRateFormat, sizeof(mode), &mode);
-				NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioConverterSetProperty", UTCreateStringForOSType(err));
+				NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"AudioConverterSetProperty", GetOSStatusError(err));
 			}
 			
 			// Update
 			size	= sizeof(converterPropertySettings);
 			err		= AudioConverterGetProperty(converter, kAudioConverterPropertySettings, &size, &converterPropertySettings);
-			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"AudioConverterGetProperty", UTCreateStringForOSType(err));
-			
+			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"AudioConverterGetProperty", GetOSStatusError(err));
+
 			err = ExtAudioFileSetProperty(extAudioFile, kExtAudioFileProperty_ConverterConfig, size, &converterPropertySettings);
-			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileSetProperty", UTCreateStringForOSType(err));
-		}					
+			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileSetProperty", GetOSStatusError(err));
+		}
 		
 		// Allocate buffer
 		bufferLen						= 10 * 1024;
@@ -186,8 +187,8 @@
 			
 			// Write the data, encoding/converting in the process
 			err = ExtAudioFileWrite(extAudioFile, frameCount, &bufferList);
-			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileWrite", UTCreateStringForOSType(err));
-			
+			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileWrite", GetOSStatusError(err));
+
 			// Update status
 			framesToRead -= frameCount;
 			
@@ -215,7 +216,7 @@
 
 			// First close the output files
 			err				= ExtAudioFileDispose(extAudioFile);
-			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileDispose", UTCreateStringForOSType(err));
+			NSAssert2(noErr == err, NSLocalizedStringFromTable(@"The call to %@ failed (%@).", @"Exceptions", @""), @"ExtAudioFileDispose", GetOSStatusError(err));
 			extAudioFile	= NULL;
 		
 			// Snow Leopard correctly writes the SMPB atom
@@ -244,7 +245,7 @@
 			if(noErr != err) {
 				exception = [NSException exceptionWithName:@"CoreAudioException" 
 													reason:[NSString stringWithFormat:NSLocalizedStringFromTable(@"The call to %@ failed.", @"Exceptions", @""), @"ExtAudioFileDispose"]
-												  userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSString stringWithCString:GetMacOSStatusErrorString(err) encoding:NSASCIIStringEncoding], [NSString stringWithCString:GetMacOSStatusCommentString(err) encoding:NSASCIIStringEncoding], nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
+													userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@(err).stringValue, GetOSStatusError(err), nil] forKeys:[NSArray arrayWithObjects:@"errorCode", @"errorString", nil]]];
 				NSLog(@"%@", exception);
 			}
 		}
