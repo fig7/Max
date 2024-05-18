@@ -22,7 +22,7 @@
 - (instancetype) handleConvertScriptCommand:(NSScriptCommand *)command;
 @end
 
-@interface ApplicationController : NSObject
+@interface ApplicationController : NSObject<NSMenuItemValidation>
 {
 }
 

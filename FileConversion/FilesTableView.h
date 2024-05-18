@@ -20,7 +20,7 @@
 
 #import "FileArrayController.h"
 
-@interface FilesTableView : NSTableView 
+@interface FilesTableView : NSTableView<NSMenuItemValidation>
 {
 	IBOutlet FileArrayController	*_filesController;
 }

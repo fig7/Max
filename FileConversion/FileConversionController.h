@@ -20,7 +20,7 @@
 
 #import "FileArrayController.h"
 
-@interface FileConversionController : NSWindowController
+@interface FileConversionController : NSWindowController<NSMenuItemValidation>
 {
 	IBOutlet FileArrayController	*_filesController;
 	IBOutlet NSPanel				*_metadataPanel;
