@@ -19,6 +19,7 @@
 #import "OggOpusEncoder.h"
 
 #include <opus/opusenc.h>
+
 #include <CoreAudio/CoreAudioTypes.h>
 #include <AudioToolbox/AudioFormat.h>
 #include <AudioToolbox/AudioConverter.h>
@@ -43,8 +44,8 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 
 - (oneway void) encodeToFile:(NSString *) filename
 {
-  NSDate            *startTime              = [NSDate date];
-  opus_int16				*buffer;
+	NSDate						*startTime							= [NSDate date];
+	opus_int16					*buffer;
 
 	int8_t						*buffer8							= NULL;
 	int16_t						*buffer16							= NULL;
@@ -52,7 +53,7 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 	unsigned					wideSample;
 	unsigned					sample, channel;
 	
-  opus_int16						constructedSample;
+	opus_int16					constructedSample;
 
 	BOOL						eos									= NO;
 
@@ -68,11 +69,11 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 	NSTimeInterval				interval;
 	unsigned					secondsRemaining;
 
-  opus_int32 sampleRate;
-  int numChannels;
+	opus_int32 sampleRate;
+	int numChannels;
 
-  OggOpusComments* comments;
-  OggOpusEnc* enc;
+	OggOpusComments* comments;
+	OggOpusEnc* enc;
 
 	@try {
 		bufferList.mBuffers[0].mData = NULL;
@@ -97,10 +98,10 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 		else
 			decoder = [Decoder decoderWithFilename:sourceFilename];
 		
-    sampleRate  = (opus_int32) [decoder pcmFormat].mSampleRate;
-    numChannels = [decoder pcmFormat].mChannelsPerFrame;
+		sampleRate  = (opus_int32) [decoder pcmFormat].mSampleRate;
+		numChannels = [decoder pcmFormat].mChannelsPerFrame;
 
-    totalFrames			= [decoder totalFrames];
+		totalFrames			= [decoder totalFrames];
 		framesToRead		= totalFrames;
 		
 		// Set up the AudioBufferList
@@ -136,13 +137,13 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 		bufferByteSize = bufferList.mBuffers[0].mDataByteSize;
 		NSAssert(NULL != bufferList.mBuffers[0].mData, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
 		
-    buffer = calloc(bufferLen, sizeof(opus_int16));
-    NSAssert(NULL != buffer, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
+		buffer = (opus_int16*) calloc(bufferLen, sizeof(opus_int16));
+		NSAssert(NULL != buffer, NSLocalizedStringFromTable(@"Unable to allocate memory.", @"Exceptions", @""));
 
 		// Open the output file
-    const char* _out = [filename fileSystemRepresentation];
-    comments = ope_comments_create();
-    enc = ope_encoder_create_file(_out, comments, (opus_int32) decoder.pcmFormat.mSampleRate, numChannels, 0, NULL);
+		const char* _out = [filename fileSystemRepresentation];
+		comments = ope_comments_create();
+		enc = ope_encoder_create_file(_out, comments, (opus_int32) decoder.pcmFormat.mSampleRate, numChannels, 0, NULL);
 		NSAssert(NULL != enc, NSLocalizedStringFromTable(@"Unable to create the output file.", @"Exceptions", @""));
 
 		// Check if we should stop, and if so throw an exception
@@ -150,13 +151,13 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 			@throw [StopException exceptionWithReason:@"Stop requested by user" userInfo:nil];
 
 		// Setup the encoder
-    if((_mode < OPUS_MODE_VBR) || (_mode > OPUS_MODE_HARD_CBR))
-      @throw [NSException exceptionWithName:@"NSInternalInconsistencyException" reason:@"Unrecognized opus mode" userInfo:nil];
+		if((_mode < OPUS_MODE_VBR) || (_mode > OPUS_MODE_HARD_CBR))
+			@throw [NSException exceptionWithName:@"NSInternalInconsistencyException" reason:@"Unrecognized opus mode" userInfo:nil];
 
-    ope_encoder_ctl(enc, OPUS_SET_VBR((_mode == OPUS_MODE_HARD_CBR) ? 0 : 1));
-    ope_encoder_ctl(enc, OPUS_SET_VBR_CONSTRAINT(_mode == OPUS_MODE_VBR) ? 0 : 1);
-    ope_encoder_ctl(enc, OPUS_SET_COMPLEXITY(_complexity));
-    ope_encoder_ctl(enc, OPUS_SET_BITRATE(_bitrate));
+		ope_encoder_ctl(enc, OPUS_SET_VBR((_mode == OPUS_MODE_HARD_CBR) ? 0 : 1));
+		ope_encoder_ctl(enc, OPUS_SET_VBR_CONSTRAINT(_mode == OPUS_MODE_VBR) ? 0 : 1);
+		ope_encoder_ctl(enc, OPUS_SET_COMPLEXITY(_complexity));
+		ope_encoder_ctl(enc, OPUS_SET_BITRATE(_bitrate));
 
 		// Iteratively get the PCM data and encode it
 		while(NO == eos) {
@@ -181,11 +182,11 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 					
 				case 16:
 					buffer16 = bufferList.mBuffers[0].mData;
-          for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
-            for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
-              buffer[sample] = (opus_int16) OSSwapBigToHostInt16(buffer16[sample]);
-            }
-          }
+					for(wideSample = sample = 0; wideSample < frameCount; ++wideSample) {
+						for(channel = 0; channel < bufferList.mBuffers[0].mNumberChannels; ++channel, ++sample) {
+							buffer[sample] = (opus_int16) OSSwapBigToHostInt16(buffer16[sample]);
+						}
+					}
 					break;
 					
 				case 24:
@@ -214,7 +215,7 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 			}
 			
 			// Write the data
-      ope_encoder_write(enc, buffer, frameCount);
+			ope_encoder_write(enc, buffer, frameCount);
 
 			// Update status
 			framesToRead -= frameCount;
@@ -235,7 +236,7 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 			}
 			
 			++iterations;
-      eos = (framesToRead == 0);
+			eos = (framesToRead == 0);
 		}
 	}
 
@@ -259,12 +260,12 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 			NSLog(@"%@", exception);
 		}
 
-    ope_encoder_destroy(enc);
-    ope_comments_destroy(comments);
+		ope_encoder_destroy(enc);
+		ope_comments_destroy(comments);
 
 		// Clean up
 		free(bufferList.mBuffers[0].mData);
-    free(buffer);
+		free(buffer);
 	}
 
 	[[self delegate] setEndTime:[NSDate date]];
@@ -279,14 +280,14 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 			break;
 			
 		case OPUS_MODE_CVBR:
-      return [NSString stringWithFormat:@"Opus settings: CVBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
+			return [NSString stringWithFormat:@"Opus settings: CVBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
 			break;
 			
-    case OPUS_MODE_HARD_CBR:
-      return [NSString stringWithFormat:@"Opus settings: CBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
-      break;
+		case OPUS_MODE_HARD_CBR:
+			return [NSString stringWithFormat:@"Opus settings: CBR(%ld kbps), COMP(%d)", _bitrate / 1000, _complexity];
+			break;
 
-    default:
+		default:
 			return nil;
 			break;
 	}
@@ -300,9 +301,9 @@ static int sOpusBitrates [12] = { 48, 64, 96, 128, 144, 160, 176, 192, 208, 224,
 {
 	NSDictionary *settings	= [[self delegate] encoderSettings];
 	
-	_mode		    = [[settings objectForKey:@"mode"] intValue];
+	_mode		= [[settings objectForKey:@"mode"] intValue];
 	_complexity	= [[settings objectForKey:@"complexity"] intValue];
-	_bitrate	  = sOpusBitrates[[[settings objectForKey:@"bitrate"] intValue]] * 1000;
+	_bitrate	= sOpusBitrates[[[settings objectForKey:@"bitrate"] intValue]] * 1000;
 }
 
 @end

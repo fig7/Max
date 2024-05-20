@@ -29,6 +29,7 @@
 #import "OggFLACDecoder.h"
 #import "OggSpeexDecoder.h"
 #import "OggVorbisDecoder.h"
+#import "OggOpusDecoder.h"
 #import "WavPackDecoder.h"
 #import "ShortenDecoder.h"
 #import "FileFormatNotSupportedException.h"
@@ -60,6 +61,8 @@
 			default:																							break;
 		}
 	}
+	else if([extension isEqualToString:@"opus"])
+		result = [[OggOpusDecoder alloc] initWithFilename:filename];
 	else if([extension isEqualToString:@"flac"])
 		result = [[FLACDecoder alloc] initWithFilename:filename];
 	else if([extension isEqualToString:@"oggflac"])

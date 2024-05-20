@@ -17,21 +17,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "Decoder.h"
 
-#import "Encoder.h"
+#include <opus/opusfile.h>
 
-// Tag values for Opus encoding modes
-enum {
-	OPUS_MODE_VBR				= 0,
-	OPUS_MODE_CVBR				= 1,
-	OPUS_MODE_HARD_CBR			= 2,
-};
-
-@interface OggOpusEncoder : Encoder
-{	
-	int		_mode;
-	int		_complexity;
-	long	_bitrate;
+@interface OggOpusDecoder : Decoder
+{
+	OggOpusFile* _of;
 }
 
 @end

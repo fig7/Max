@@ -154,7 +154,7 @@ GetBuiltinExtensions(void)
 {
 	@synchronized(sBuiltinExtensions) {
 		if(nil == sBuiltinExtensions) {
-			sBuiltinExtensions = [NSArray arrayWithObjects:@"ogg", @"flac", @"oga", @"oggflac", @"spx", @"ape", @"apl", @"mac", @"wv", @"shn", @"mpc", nil];
+			sBuiltinExtensions = [NSArray arrayWithObjects:@"ogg", @"flac", @"oga", @"oggflac", @"spx", @"ape", @"apl", @"mac", @"wv", @"shn", @"mpc", @"opus", nil];
 			[sBuiltinExtensions retain];
 		}
 	}

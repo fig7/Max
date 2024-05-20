@@ -34,6 +34,7 @@
 		121F7C0C2BF594E400D542B1 /* OpusSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 121F7C0A2BF594E400D542B1 /* OpusSettingsSheet.m */; };
 		121F7C0F2BF596CA00D542B1 /* OpusSettingsSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 121F7C0D2BF596CA00D542B1 /* OpusSettingsSheet.xib */; };
 		121F7C262BF6565E00D542B1 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 121F7C242BF6563D00D542B1 /* UniformTypeIdentifiers.framework */; };
+		126D7B822BFAC7E50089BD7D /* OggOpusDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 126D7B812BFAC7E50089BD7D /* OggOpusDecoder.m */; };
 		322D60CB2405D1740077AA91 /* MusicBrainzHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 322D60CA2405D1740077AA91 /* MusicBrainzHelper.m */; };
 		322E1EB30DC81AAB00CB6DDB /* OggSpeexEncoderTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 322E1EB20DC81AAB00CB6DDB /* OggSpeexEncoderTask.mm */; };
 		325BFE4E1050DB5A00FE11C2 /* CueSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = 325BFE4A1050DB5A00FE11C2 /* CueSheet.strings */; };
@@ -285,6 +286,8 @@
 		121F7C132BF5A4B800D542B1 /* it */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = it; path = it.lproj/OpusSettingsSheet.xib; sourceTree = "<group>"; };
 		121F7C142BF5A4CD00D542B1 /* es */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = es; path = es.lproj/OpusSettingsSheet.xib; sourceTree = "<group>"; };
 		121F7C242BF6563D00D542B1 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		126D7B7F2BFAC50D0089BD7D /* OggOpusDecoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OggOpusDecoder.h; path = Decoders/OggOpusDecoder.h; sourceTree = "<group>"; };
+		126D7B812BFAC7E50089BD7D /* OggOpusDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OggOpusDecoder.m; path = Decoders/OggOpusDecoder.m; sourceTree = "<group>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -1409,6 +1412,8 @@
 				8CFA4B3D0ABDE11800C5AE9F /* MusepackDecoder.m */,
 				8CFA4B3E0ABDE11800C5AE9F /* OggFLACDecoder.h */,
 				8CFA4B3F0ABDE11800C5AE9F /* OggFLACDecoder.m */,
+				126D7B7F2BFAC50D0089BD7D /* OggOpusDecoder.h */,
+				126D7B812BFAC7E50089BD7D /* OggOpusDecoder.m */,
 				8CFA4B400ABDE11800C5AE9F /* OggSpeexDecoder.h */,
 				8CFA4B410ABDE11800C5AE9F /* OggSpeexDecoder.m */,
 				8CFA4B420ABDE11800C5AE9F /* OggVorbisDecoder.h */,
@@ -1612,6 +1617,7 @@
 				8C89C6470A069E5000359E67 /* PreferencesController.m in Sources */,
 				8C89C6490A069E5000359E67 /* RipperPreferencesController.m in Sources */,
 				8C89C64B0A069E5000359E67 /* TaggingPreferencesController.m in Sources */,
+				126D7B822BFAC7E50089BD7D /* OggOpusDecoder.m in Sources */,
 				8C89CA750A06F7B200359E67 /* EncoderSettingsSheet.m in Sources */,
 				8C89CA770A06F7B200359E67 /* FLACSettingsSheet.m in Sources */,
 				8C89CA790A06F7B200359E67 /* MonkeysAudioSettingsSheet.m in Sources */,
